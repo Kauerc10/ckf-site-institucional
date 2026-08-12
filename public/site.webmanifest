@@ -1,0 +1,21 @@
+{
+  "name": "CKF Manutenção",
+  "short_name": "CKF",
+  "description": "Manutenção especializada para manter sua operação em movimento.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090c0d",
+  "theme_color": "#090c0d",
+  "icons": [
+    {
+      "src": "/assets/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/apple-touch-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
