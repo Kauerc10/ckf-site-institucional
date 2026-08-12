@@ -14,10 +14,10 @@
     "node": "24.x"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "5.0.4",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
+    "@vitejs/plugin-react": "6.0.5",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
     "react-icons": "^5.7.0",
-    "vite": "6.4.2"
+    "vite": "8.2.1"
   }
 }
