@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "vite build && node scripts/prepare-sites-build.mjs",
     "preview": "vite preview",
-    "test:sites": "node --test tests/sites-worker.test.mjs"
+    "test:sites": "node --test tests/sites-worker.test.mjs",
+    "check:deploy": "npm run build && npm run test:sites && node --test tests/vercel-config.test.mjs"
+  },
+  "engines": {
+    "node": "24.x"
   },
   "dependencies": {
     "@vitejs/plugin-react": "5.0.4",
