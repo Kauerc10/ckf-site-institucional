@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Suporte e orientações
+    url: https://github.com/Kauerc10/ckf-site-institucional/blob/main/SUPPORT.md
+    about: Veja como pedir ajuda antes de abrir uma issue.
+  - name: Reportar segurança
+    url: https://github.com/Kauerc10/ckf-site-institucional/blob/main/SECURITY.md
+    about: Não publique vulnerabilidades ou informações sensíveis.

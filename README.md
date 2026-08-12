@@ -16,6 +16,15 @@ Este projeto faz parte de um conjunto de repositórios com responsabilidades sep
 
 As imagens e variações da identidade visual utilizadas aqui devem vir de uma entrega aprovada no repositório de design. Alterações na marca são versionadas primeiro na fonte oficial e depois aplicadas ao site por pull request.
 
+## Documentação e suporte
+
+- [Guia técnico](docs/REPOSITORY_GUIDE.md) — estrutura, build, deploy e assets.
+- [Como contribuir](CONTRIBUTING.md) — fluxo de branches, pull requests e validação.
+- [Código de conduta](CODE_OF_CONDUCT.md) — regras de colaboração.
+- [Segurança](SECURITY.md) — reporte responsável e cuidados de deploy.
+- [Suporte](SUPPORT.md) — como pedir ajuda sem expor informações sensíveis.
+- [Termos de uso](LICENSE.md) — uso do código, marca e materiais do site.
+
 ## O que está incluído
 
 - Hero comercial com CTA de orçamento
