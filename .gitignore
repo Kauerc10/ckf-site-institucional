@@ -1,0 +1,19 @@
+# Dependencies and generated builds
+node_modules/
+dist/
+
+# Local design-QA captures
+implementation-*.png
+design-qa-comparison.png
+
+# Editor and operating-system files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+
+# Environment files
+.env
+.env.*
+!.env.example
