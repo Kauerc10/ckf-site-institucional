@@ -4,6 +4,18 @@ Landing page institucional da **CKF Manutenção**, criada para apresentar as
 soluções de manutenção pesada e transformar interesse em pedidos de orçamento
 via WhatsApp.
 
+## Ecossistema CKF
+
+Este projeto faz parte de um conjunto de repositórios com responsabilidades separadas:
+
+| Repositório | Responsabilidade |
+| --- | --- |
+| [CKF Design](https://github.com/Kauerc10/ckf-design) | Fonte oficial da marca, dos assets e das entregas de design |
+| **[Site Institucional](https://github.com/Kauerc10/ckf-site-institucional)** | Presença pública, apresentação dos serviços e captação de contatos |
+| [Sistema de Orçamentos](https://github.com/Kauerc10/ckf-manutencao-orcamentos) | Operação interna, clientes, orçamentos e documentos comerciais |
+
+As imagens e variações da identidade visual utilizadas aqui devem vir de uma entrega aprovada no repositório de design. Alterações na marca são versionadas primeiro na fonte oficial e depois aplicadas ao site por pull request.
+
 ## O que está incluído
 
 - Hero comercial com CTA de orçamento
