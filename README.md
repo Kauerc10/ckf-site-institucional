@@ -34,11 +34,22 @@ O Vite exibirá a URL local de visualização.
 ## Qualidade
 
 ```bash
-npm run build
-npm run test:sites
+npm run check:deploy
 ```
 
 O relatório de comparação visual está em [`design-qa.md`](design-qa.md).
+
+## Deploy na Vercel
+
+O projeto está pronto para importação direta na Vercel. O arquivo
+[`vercel.json`](vercel.json) fixa o build de produção, publica somente
+`dist/client`, preserva a navegação da SPA e aplica cabeçalhos de segurança.
+A versão do Node usada no build também está fixada no `package.json` para evitar
+diferenças entre os ambientes local e remoto.
+
+Depois de conectar o repositório, a Vercel detecta o Vite e executa
+automaticamente `npm run build`; não é necessário cadastrar comandos ou pasta
+de saída manualmente no painel.
 
 ## Estrutura
 
