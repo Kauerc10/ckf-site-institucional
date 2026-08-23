@@ -3,6 +3,8 @@ import {
   FaBuilding,
   FaComments,
   FaIndustry,
+  FaLocationDot,
+  FaMapLocationDot,
   FaMagnifyingGlass,
   FaScrewdriverWrench,
   FaTruck,
@@ -12,6 +14,7 @@ import {
 import './styles.css'
 
 const WHATSAPP = 'https://wa.me/5547991214232?text=Olá%2C%20gostaria%20de%20solicitar%20um%20orçamento.'
+const MAPS = 'https://www.google.com/maps/search/?api=1&query=Rodovia%20BR-101%2C%206780%2C%20Galp%C3%A3o%2001%20Sala%2001%2C%20Espinheiros%2C%20Itaja%C3%AD%20-%20SC%2C%2088317-000'
 
 const serviceHighlights = [
   { title: 'Caminhões e máquinas pesadas', image: '/assets/real/chassis-real.webp' },
@@ -47,12 +50,12 @@ export function App() {
     <main>
       <header className="topbar">
         <a className="brand" href="#inicio" aria-label="CKF Manutenção - Início"><img src="/assets/logo-ckf.png" alt="CKF Manutenção" /></a>
-        <nav aria-label="Navegação principal"><a href="#servicos">Serviços</a><a href="#sobre">Quem somos</a><a href="#processo">Como trabalhamos</a><a href="#contato">Contato</a></nav>
+        <nav aria-label="Navegação principal"><a href="#servicos">Serviços</a><a href="#sobre">Quem somos</a><a href="#processo">Como trabalhamos</a><a href="#localizacao">Localização</a><a href="#contato">Contato</a></nav>
         <a className="button button--small" href={WHATSAPP} target="_blank" rel="noreferrer"><FaWhatsapp /> Pedir orçamento</a>
       </header>
 
       <section className="hero" id="inicio">
-        <img src="/assets/real/chassis-real.webp" alt="Chassis de caminhão em manutenção na oficina da CKF" fetchPriority="high" />
+        <img src="/assets/real/chassis-ai-enhanced.webp" alt="Chassis de caminhão em manutenção na oficina da CKF" fetchPriority="high" />
         <div className="hero__content"><p className="eyebrow">CKF Manutenção</p><h1>Sua operação<br />precisa continuar.</h1><p>Manutenção especializada para caminhões, máquinas, centrais de concreto e estruturas em movimento.</p><a className="button" href={WHATSAPP} target="_blank" rel="noreferrer"><FaWhatsapp /> Solicitar orçamento</a></div>
       </section>
 
@@ -69,7 +72,9 @@ export function App() {
 
       <section className="process" id="processo"><div className="section-shell"><p className="eyebrow">Nosso processo</p><h2>Da primeira conversa ao retorno da operação.</h2><div className="process__track">{process.map(([Icon, number, title, text]) => <article className="process__step" key={number}><div className="process__icon"><Icon aria-hidden="true" /></div><span className="process__number">{number}</span><h3>{title}</h3><p>{text}</p></article>)}</div></div></section>
 
-      <section className="trust"><img src="/assets/real/equipe-central-real.webp" alt="Equipe da CKF executando serviço em central de concreto" loading="lazy" /><div className="section-shell trust__copy"><p className="eyebrow">Trabalho que sustenta</p><h2>Gente que resolve.<br />Do jeito certo.</h2><p>Equipe especializada, trabalho de verdade e foco total no que importa: sua operação funcionando com segurança.</p></div></section>
+      <section className="trust"><img src="/assets/real/equipe-central-ai-enhanced.webp" alt="Equipe da CKF executando serviço em central de concreto" loading="lazy" /><div className="section-shell trust__copy"><p className="eyebrow">Trabalho que sustenta</p><h2>Gente que resolve.<br />Do jeito certo.</h2><p>Equipe especializada, trabalho de verdade e foco total no que importa: sua operação funcionando com segurança.</p></div></section>
+
+      <section className="location" id="localizacao"><div className="section-shell location__card"><img src="/assets/real/fachada-real.webp" alt="Fachada da unidade da CKF Manutenção" loading="lazy" /><div className="location__copy"><p className="eyebrow">Nossa unidade</p><h2>Venha conversar com a equipe.</h2><address><FaLocationDot aria-hidden="true" /><span>Rodovia BR-101, 6780<br />Galpão 01, Sala 01 · Espinheiros<br />Itajaí · SC · 88317-000</span></address><a className="button" href={MAPS} target="_blank" rel="noreferrer"><FaMapLocationDot /> Abrir rota no Maps</a></div></div></section>
 
       <section className="contact" id="contato"><div className="section-shell contact__wrap"><div><FaWhatsapp className="contact__icon" aria-hidden="true" /><div><h2>Precisou? Chama no WhatsApp.</h2><p>Fale agora com a CKF e receba seu orçamento rápido.</p></div></div><a className="button" href={WHATSAPP} target="_blank" rel="noreferrer"><FaWhatsapp /> Pedir orçamento</a></div></section>
 
