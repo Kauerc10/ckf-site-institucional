@@ -55,7 +55,7 @@ export function App() {
       </header>
 
       <section className="hero" id="inicio">
-        <img src="/assets/real/chassis-ai-enhanced.webp" alt="Chassis de caminhão em manutenção na oficina da CKF" fetchPriority="high" />
+        <img src="/assets/solda-ckf.webp" alt="Profissional da CKF realizando solda em chassi de caminhão" fetchPriority="high" />
         <div className="hero__content"><p className="eyebrow">CKF Manutenção</p><h1>Sua operação<br />precisa continuar.</h1><p>Manutenção especializada para caminhões, máquinas, centrais de concreto e estruturas em movimento.</p><a className="button" href={WHATSAPP} target="_blank" rel="noreferrer"><FaWhatsapp /> Solicitar orçamento</a></div>
       </section>
 
@@ -72,7 +72,7 @@ export function App() {
 
       <section className="process" id="processo"><div className="section-shell"><p className="eyebrow">Nosso processo</p><h2>Da primeira conversa ao retorno da operação.</h2><div className="process__track">{process.map(([Icon, number, title, text]) => <article className="process__step" key={number}><div className="process__icon"><Icon aria-hidden="true" /></div><span className="process__number">{number}</span><h3>{title}</h3><p>{text}</p></article>)}</div></div></section>
 
-      <section className="trust"><img src="/assets/solda-ckf.webp" alt="Profissional da CKF realizando solda em chassi de caminhão" loading="lazy" /><div className="section-shell trust__copy"><p className="eyebrow">Trabalho que sustenta</p><h2>Gente que resolve.<br />Do jeito certo.</h2><p>Equipe especializada, trabalho de verdade e foco total no que importa: sua operação funcionando com segurança.</p></div></section>
+      <section className="trust"><img src="/assets/real/equipe-central-ai-enhanced.webp" alt="Equipe da CKF executando serviço em central de concreto" loading="lazy" /><div className="section-shell trust__copy"><p className="eyebrow">Trabalho que sustenta</p><h2>Gente que resolve.<br />Do jeito certo.</h2><p>Equipe especializada, trabalho de verdade e foco total no que importa: sua operação funcionando com segurança.</p></div></section>
 
       <section className="location" id="localizacao"><div className="section-shell location__card"><img src="/assets/real/fachada-real.webp" alt="Fachada da unidade da CKF Manutenção" loading="lazy" /><div className="location__copy"><p className="eyebrow">Nossa unidade</p><h2>Venha conversar com a equipe.</h2><address><FaLocationDot aria-hidden="true" /><span>Rodovia BR-101, 6780<br />Galpão 01, Sala 01 · Espinheiros<br />Itajaí · SC · 88317-000</span></address><a className="button" href={MAPS} target="_blank" rel="noreferrer"><FaMapLocationDot /> Abrir rota no Maps</a></div></div></section>
 
