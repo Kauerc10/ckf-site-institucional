@@ -11,6 +11,28 @@
 .service-page .service-page__table tbody th { width:38%; }
 .service-page .contact__wrap>div { max-width:760px; }
 .service-page footer .footer__inner { grid-template-columns:1.3fr 1fr 1fr; }
+.service-page__breadcrumb { display:flex; align-items:center; gap:10px; padding-top:24px; padding-bottom:24px; color:var(--muted); font-size:13px; }
+.service-page__breadcrumb a { color:inherit; text-decoration:none; }
+.service-page__breadcrumb a:hover { color:var(--yellow); }
+.service-page__related { padding-top:72px; padding-bottom:72px; }
+.service-page__related h2 { margin:0 0 24px; font-size:clamp(34px,4vw,52px); }
+.service-page__related ul { display:flex; flex-wrap:wrap; gap:12px; margin:0; padding:0; list-style:none; }
+.service-page__related a { display:block; padding:12px 16px; border:1px solid rgba(255,255,255,.12); border-radius:999px; color:#fff; text-decoration:none; }
+.service-page__related a:hover { border-color:var(--yellow); color:var(--yellow); }
+.service-page__hub { padding-top:100px; padding-bottom:100px; }
+.service-page__hub>h1 { margin:0; font-size:clamp(54px,8vw,96px); line-height:.88; }
+.service-page__hub>p:not(.eyebrow) { max-width:720px; margin:24px 0 52px; color:var(--muted); font-size:18px; line-height:1.6; }
+.service-page__hub-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.service-page__hub-card { padding:28px; border:1px solid rgba(255,255,255,.1); border-radius:18px; background:rgba(255,255,255,.025); }
+.service-page__hub-card h2 { margin:8px 0 12px; font-size:clamp(27px,3vw,38px); }
+.service-page__hub-card h2 a { color:#fff; text-decoration:none; }
+.service-page__hub-card p:not(.eyebrow) { color:var(--muted); line-height:1.55; }
+.service-page__hub-card .text-link { display:inline-block; margin-top:10px; color:var(--yellow); }
+.service-page__legal { max-width:900px; padding-top:96px; padding-bottom:120px; }
+.service-page__legal h1 { margin:0 0 32px; font-size:clamp(52px,7vw,84px); line-height:.9; }
+.service-page__legal h2 { margin:44px 0 12px; font-size:28px; }
+.service-page__legal p { color:var(--muted); font-size:17px; line-height:1.75; }
+.service-page__legal small { color:rgba(255,255,255,.45); }
 @media (max-width:800px) {
   .service-page .hero { height:640px; min-height:640px; }
   .service-page .hero__content { width:calc(100% - 44px); }
@@ -19,4 +41,6 @@
   .service-page .service-list__layout>div:first-child { margin-bottom:32px; }
   .service-page .service-page__table { overflow-x:auto; }
   .service-page .service-page__table table { min-width:560px; }
+  .service-page__hub-grid { grid-template-columns:1fr; }
+  .service-page__breadcrumb { overflow:auto; white-space:nowrap; }
 }
