@@ -1,6 +1,11 @@
 export const SERVICE_PAGES = Object.freeze([
   Object.freeze({
     slug: 'manutencao-caminhoes',
+    href: '/servicos/manutencao-caminhoes',
+    cardTitle: 'Caminhões e máquinas pesadas',
+    featured: true,
+    ticketCategory: 'trucks',
+    relatedSlugs: ['central-concreto', 'reforma-chassis'],
     title: 'Manutenção de caminhões em Itajaí | CKF Manutenção',
     heading: 'Manutenção de caminhões e máquinas pesadas em Itajaí',
     eyebrow: 'Caminhões e máquinas pesadas',
@@ -18,6 +23,11 @@ export const SERVICE_PAGES = Object.freeze([
   }),
   Object.freeze({
     slug: 'central-concreto',
+    href: '/servicos/central-concreto',
+    cardTitle: 'Centrais de concreto',
+    featured: true,
+    ticketCategory: 'concrete_plants',
+    relatedSlugs: ['manutencao-caminhoes', 'estruturas-metalicas'],
     title: 'Manutenção de centrais de concreto em Itajaí | CKF Manutenção',
     heading: 'Manutenção de centrais de concreto em Itajaí',
     eyebrow: 'Centrais de concreto',
@@ -35,6 +45,11 @@ export const SERVICE_PAGES = Object.freeze([
   }),
   Object.freeze({
     slug: 'reforma-chassis',
+    href: '/servicos/reforma-chassis',
+    cardTitle: 'Reforma de equipamentos e chassis',
+    featured: true,
+    ticketCategory: 'chassis',
+    relatedSlugs: ['manutencao-caminhoes', 'estruturas-metalicas'],
     title: 'Reforma de chassis em Itajaí | CKF Manutenção',
     heading: 'Reforma de chassis em Itajaí',
     eyebrow: 'Recuperação estrutural',
@@ -52,6 +67,11 @@ export const SERVICE_PAGES = Object.freeze([
   }),
   Object.freeze({
     slug: 'estruturas-metalicas',
+    href: '/servicos/estruturas-metalicas',
+    cardTitle: 'Estruturas metálicas',
+    featured: true,
+    ticketCategory: 'metal_structures',
+    relatedSlugs: ['central-concreto', 'reforma-chassis'],
     title: 'Estruturas metálicas e solda em Itajaí | CKF Manutenção',
     heading: 'Estruturas metálicas e solda em Itajaí',
     eyebrow: 'Estruturas e fabricação',
