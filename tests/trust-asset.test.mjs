@@ -11,6 +11,6 @@ test('seção de confiança usa fotografia real da equipe', () => {
   const trustSection = app.match(/<section className="trust">([\s\S]*?)<\/section>/)?.[0]
 
   assert.ok(trustSection, 'seção trust deve existir')
-  assert.match(trustSection, /\/assets\/real\/equipe-central-real\.webp/)
+  assert.match(trustSection, /\/assets\/equipe-ckf-editorial\.webp/)
   assert.doesNotMatch(trustSection, /ai-enhanced/)
 })
