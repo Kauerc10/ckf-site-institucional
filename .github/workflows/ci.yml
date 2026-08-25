@@ -31,5 +31,8 @@ jobs:
       - name: Instalar dependências
         run: npm ci
 
+      - name: Auditar dependências
+        run: npm run security:audit
+
       - name: Validar build, worker e configuração Vercel
         run: npm run check:deploy
