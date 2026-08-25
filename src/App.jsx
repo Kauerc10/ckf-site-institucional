@@ -18,10 +18,10 @@ const WHATSAPP = buildWhatsAppUrl()
 const MAPS = 'https://www.google.com/maps/search/?api=1&query=Rodovia%20BR-101%2C%206780%2C%20Galp%C3%A3o%2001%20Sala%2001%2C%20Espinheiros%2C%20Itaja%C3%AD%20-%20SC%2C%2088317-000'
 
 const serviceHighlights = [
-  { title: 'Caminhões e máquinas pesadas', image: '/assets/real/chassis-real.webp' },
-  { title: 'Centrais de concreto', image: '/assets/central-concreto-editorial.webp' },
-  { title: 'Reforma de equipamentos e chassis', image: '/assets/real/maquina-pesada-real.webp' },
-  { title: 'Estruturas metálicas', image: '/assets/estruturas-editorial.webp' },
+  { title: 'Caminhões e máquinas pesadas', href: '/servicos/manutencao-caminhoes', image: '/assets/real/chassis-real.webp' },
+  { title: 'Centrais de concreto', href: '/servicos/central-concreto', image: '/assets/central-concreto-editorial.webp' },
+  { title: 'Reforma de equipamentos e chassis', href: '/servicos/reforma-chassis', image: '/assets/real/maquina-pesada-real.webp' },
+  { title: 'Estruturas metálicas', href: '/servicos/estruturas-metalicas', image: '/assets/estruturas-editorial.webp' },
 ]
 
 const capabilityGallery = [
@@ -90,7 +90,7 @@ export function App() {
 
       <section className="services section-shell" id="servicos">
         <div className="services__intro"><p className="eyebrow">Para cada desafio</p><h2>Soluções que sustentam a operação.</h2><p>Diagnóstico, execução e responsabilidade técnica para o trabalho seguir no ritmo certo.</p></div>
-        <div className="service-grid">{serviceHighlights.map((service, index) => <a className="service-card" key={service.title} href={buildWhatsAppUrl({ service: service.title })} target="_blank" rel="noreferrer" aria-label={`Solicitar orçamento para ${service.title}`} data-cta-source="service-highlight" data-cta-service={service.title}><img src={service.image} alt="" loading="lazy" /><span className="service-card__number">0{index + 1}</span><h3>{service.title}</h3></a>)}</div>
+        <div className="service-grid">{serviceHighlights.map((service, index) => <a className="service-card" key={service.title} href={service.href} aria-label={`Conhecer ${service.title}`} data-cta-source="service-highlight" data-cta-service={service.title}><img src={service.image} alt="" loading="lazy" /><span className="service-card__number">0{index + 1}</span><h3>{service.title}</h3></a>)}</div>
       </section>
 
       <section className="service-list" aria-labelledby="service-list-title"><div className="section-shell service-list__layout"><div><p className="eyebrow">Manutenção geral</p><h2 id="service-list-title">O essencial para sua operação seguir.</h2><p>Serviços objetivos, atendimento direto e orçamento pelo WhatsApp.</p></div><div className="service-table-wrap"><table><thead><tr><th scope="col">Serviço</th><th scope="col">Como ajudamos</th><th aria-label="Solicitar orçamento" /></tr></thead><tbody>{serviceTable.map(([service, description]) => <tr key={service}><th scope="row">{service}</th><td>{description}</td><td><a href={buildWhatsAppUrl({ service })} target="_blank" rel="noreferrer" aria-label={`Falar sobre ${service} no WhatsApp`} data-cta-source="service-table" data-cta-service={service}><FaArrowRight aria-hidden="true" /></a></td></tr>)}</tbody></table><a className="text-link" href={WHATSAPP} target="_blank" rel="noreferrer" data-cta-source="service-list"><FaWhatsapp /> Falar sobre um serviço <FaArrowRight aria-hidden="true" /></a></div></div></section>
