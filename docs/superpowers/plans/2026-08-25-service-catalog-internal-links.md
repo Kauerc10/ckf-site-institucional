@@ -1,10 +1,10 @@
-# Catálogo de Serviços e Links Internos Implementation Plan
+# Catálogo Canônico de Serviços Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Consolidar um catálogo canônico de serviços e fazer a home distribuir navegação rastreável para as páginas de serviço sem remover os atalhos diretos de WhatsApp.
+**Goal:** Consolidar `service-pages.mjs` como fonte única dos serviços usados pela home, build estático, SEO e futuro Ticket Engine, preservando os links internos já entregues pela PR #16.
 
-**Architecture:** O arquivo `service-pages.mjs` evolui para a fonte de verdade compartilhada entre o React e o gerador estático. A home importa apenas os serviços marcados como `featured`, usa `href` interno nos cards e preserva os CTAs diretos de alta intenção fora desses cards.
+**Architecture:** Os quatro serviços existentes ganham metadados estáveis para navegação e tickets. A home deixa de duplicar títulos, URLs e imagens em um array hardcoded e passa a derivar seus destaques de `SERVICE_PAGES`, sem alterar o comportamento comercial já validado.
 
 **Tech Stack:** React 19, Vite 8, Node 24 test runner, HTML estático gerado no build.
 
@@ -16,12 +16,13 @@
 - Nenhuma linguagem `lead` entra na interface, API própria, eventos ou banco desse fluxo.
 - Novas URLs somente para serviços realmente prestados pela CKF.
 - Links rastreáveis precisam ser `<a href>` reais.
-- WhatsApp direto continua disponível em pontos de alta intenção.
+- Os links internos dos cards entregues pela PR #16 não podem regredir para WhatsApp direto.
+- WhatsApp direto continua disponível em pontos de alta intenção fora dos cards principais.
 - Todos os commits funcionais seguem RED -> GREEN.
 
 ---
 
-### Task 1: Tornar o catálogo atual consumível pela home e pelo build
+### Task 1: Tornar o catálogo atual consumível pela home e pelo Ticket Engine
 
 **Files:**
 - Modify: `service-pages.mjs`
@@ -29,8 +30,7 @@
 - Modify: `package.json`
 
 **Interfaces:**
-- Produces: `SERVICE_PAGES: readonly ServicePage[]` com `href`, `featured`, `cardTitle`, `ticketCategory` e `relatedSlugs`.
-- Consumes: nenhum contrato novo.
+- Produces: `SERVICE_PAGES` com `href`, `featured`, `cardTitle`, `ticketCategory` e `relatedSlugs`.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -54,7 +54,6 @@ test('serviços atuais expõem contrato canônico para navegação e tickets', (
   for (const service of SERVICE_PAGES) {
     assert.match(service.slug, /^[a-z0-9-]+$/)
     assert.equal(service.href, `/servicos/${service.slug}`)
-    assert.equal(typeof service.cardTitle, 'string')
     assert.equal(service.cardTitle.length > 3, true)
     assert.equal(typeof service.featured, 'boolean')
     assert.equal(allowedCategories.has(service.ticketCategory), true)
@@ -62,9 +61,15 @@ test('serviços atuais expõem contrato canônico para navegação e tickets', (
   }
 })
 
-test('slugs e hrefs são únicos', () => {
+test('slugs, hrefs e categorias dos quatro serviços são coerentes', () => {
   assert.equal(new Set(SERVICE_PAGES.map((item) => item.slug)).size, SERVICE_PAGES.length)
   assert.equal(new Set(SERVICE_PAGES.map((item) => item.href)).size, SERVICE_PAGES.length)
+  for (const service of SERVICE_PAGES) {
+    for (const relatedSlug of service.relatedSlugs) {
+      assert.ok(SERVICE_PAGES.some((item) => item.slug === relatedSlug))
+      assert.notEqual(relatedSlug, service.slug)
+    }
+  }
 })
 ```
 
@@ -72,63 +77,47 @@ Adicionar `tests/service-catalog.test.mjs` ao script `test:unit`.
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run:
-
-```bash
-npm run test:unit
-```
+Run: `npm run test:unit`
 
 Expected: FAIL porque os objetos atuais não possuem `href`, `featured`, `cardTitle`, `ticketCategory` e `relatedSlugs`.
 
 - [ ] **Step 3: Write minimal implementation**
 
-Adicionar aos quatro objetos existentes em `service-pages.mjs`:
+Adicionar aos quatro objetos existentes:
 
 ```js
-{
-  slug: 'manutencao-caminhoes',
-  href: '/servicos/manutencao-caminhoes',
-  featured: true,
-  cardTitle: 'Caminhões e máquinas pesadas',
-  ticketCategory: 'trucks',
-  relatedSlugs: ['reforma-chassis', 'estruturas-metalicas'],
-  // manter os campos existentes
-}
-```
+// manutencao-caminhoes
+href: '/servicos/manutencao-caminhoes',
+featured: true,
+cardTitle: 'Caminhões e máquinas pesadas',
+ticketCategory: 'trucks',
+relatedSlugs: ['reforma-chassis', 'estruturas-metalicas'],
 
-Usar, respectivamente:
-
-```js
 // central-concreto
-href: '/servicos/central-concreto'
-featured: true
-cardTitle: 'Centrais de concreto'
-ticketCategory: 'concrete_plants'
-relatedSlugs: ['estruturas-metalicas', 'reforma-chassis']
+href: '/servicos/central-concreto',
+featured: true,
+cardTitle: 'Centrais de concreto',
+ticketCategory: 'concrete_plants',
+relatedSlugs: ['estruturas-metalicas', 'reforma-chassis'],
 
 // reforma-chassis
-href: '/servicos/reforma-chassis'
-featured: true
-cardTitle: 'Reforma de equipamentos e chassis'
-ticketCategory: 'chassis'
-relatedSlugs: ['manutencao-caminhoes', 'estruturas-metalicas']
+href: '/servicos/reforma-chassis',
+featured: true,
+cardTitle: 'Reforma de equipamentos e chassis',
+ticketCategory: 'chassis',
+relatedSlugs: ['manutencao-caminhoes', 'estruturas-metalicas'],
 
 // estruturas-metalicas
-href: '/servicos/estruturas-metalicas'
-featured: true
-cardTitle: 'Estruturas metálicas'
-ticketCategory: 'metal_structures'
-relatedSlugs: ['central-concreto', 'reforma-chassis']
+href: '/servicos/estruturas-metalicas',
+featured: true,
+cardTitle: 'Estruturas metálicas',
+ticketCategory: 'metal_structures',
+relatedSlugs: ['central-concreto', 'reforma-chassis'],
 ```
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run:
-
-```bash
-npm run test:unit
-```
-
+Run: `npm run test:unit`
 Expected: PASS.
 
 - [ ] **Step 5: Commit**
@@ -140,49 +129,44 @@ git commit -m "feat: consolida catálogo canônico de serviços"
 
 ---
 
-### Task 2: Fazer os cards da home apontarem para páginas internas
+### Task 2: Remover duplicação da home sem alterar navegação
 
 **Files:**
 - Modify: `src/App.jsx`
-- Create: `tests/internal-service-links.test.mjs`
+- Modify: `tests/service-internal-links.test.mjs`
+- Create: `tests/service-home-catalog.test.mjs`
 - Modify: `package.json`
 
 **Interfaces:**
 - Consumes: `SERVICE_PAGES` da Task 1.
-- Produces: cards de destaque com `href` interno e `data-service-slug`.
+- Produces: `serviceHighlights` derivado apenas de serviços `featured`.
 
 - [ ] **Step 1: Write the failing test**
 
-Criar `tests/internal-service-links.test.mjs`:
-
 ```js
 import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
+import { readFileSync } from 'node:fs'
 import test from 'node:test'
 
-const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8')
+const app = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8')
 
-test('home usa o catálogo e links internos nos cards principais', () => {
+test('home deriva destaques do catálogo canônico', () => {
   assert.match(app, /SERVICE_PAGES/)
-  assert.match(app, /service\.href/)
-  assert.match(app, /data-service-slug=/)
-  assert.doesNotMatch(app, /service-card[^\n]+buildWhatsAppUrl/)
+  assert.match(app, /\.filter\(\(service\) => service\.featured\)/)
+  assert.match(app, /href=\{service\.href\}/)
+  assert.match(app, /data-service-slug=\{service\.slug\}/)
 })
 ```
 
-Adicionar o arquivo ao `test:unit`.
+Atualizar `tests/service-internal-links.test.mjs` para validar o comportamento através do catálogo, em vez de exigir quatro URLs duplicadas literalmente em `App.jsx`.
 
-- [ ] **Step 2: Run test to verify it fails**
+- [ ] **Step 2: Run RED**
 
-Run:
+Run: `npm run test:unit`
 
-```bash
-npm run test:unit
-```
+Expected: FAIL porque a home ainda mantém `serviceHighlights` hardcoded e não importa `SERVICE_PAGES`.
 
-Expected: FAIL porque `serviceHighlights` ainda é hardcoded e os cards abrem WhatsApp.
-
-- [ ] **Step 3: Write minimal implementation**
+- [ ] **Step 3: Implement minimal refactor**
 
 No topo de `src/App.jsx`:
 
@@ -203,50 +187,34 @@ const serviceHighlights = SERVICE_PAGES
   }))
 ```
 
-Alterar o card:
+No card manter `href={service.href}` e adicionar:
 
 ```jsx
-<a
-  className="service-card"
-  key={service.slug}
-  href={service.href}
-  data-service-slug={service.slug}
->
-  <img src={service.image} alt="" loading="lazy" />
-  <span className="service-card__number">0{index + 1}</span>
-  <h3>{service.title}</h3>
-</a>
+data-service-slug={service.slug}
 ```
 
-Não alterar os links de WhatsApp da hero, tabela, header, contato e rodapé nesta task.
+Não alterar hero, tabela, header, contato ou rodapé nesta task.
 
-- [ ] **Step 4: Run test to verify it passes**
+- [ ] **Step 4: Run GREEN**
 
-```bash
-npm run check:deploy
-```
-
-Expected: todos os testes, build e configurações verdes.
+Run: `npm run check:deploy`
+Expected: build e todos os gates verdes.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add src/App.jsx tests/internal-service-links.test.mjs package.json
-git commit -m "feat: conecta home às páginas de serviço"
+git add src/App.jsx tests/service-internal-links.test.mjs tests/service-home-catalog.test.mjs package.json
+git commit -m "refactor: usa catálogo único na home"
 ```
 
 ---
 
-### Task 3: Verificar navegação real em preview
+### Task 3: Verificar que o catálogo não alterou as rotas publicadas
 
 **Files:**
 - No code changes unless verification finds a defect.
 
-**Interfaces:**
-- Consumes: deploy Vercel da branch.
-- Produces: evidência de que cada card resolve em uma página estática 200.
-
-- [ ] **Step 1: Run full CI**
+- [ ] **Step 1: Run full gates**
 
 ```bash
 npm ci
@@ -256,20 +224,19 @@ npm run check:deploy
 
 Expected: PASS e `found 0 vulnerabilities`.
 
-- [ ] **Step 2: Verify preview routes**
+- [ ] **Step 2: Verify generated pages**
 
-Verificar no preview Vercel:
+Validar que o build ainda contém:
 
 ```text
-/
 /servicos/manutencao-caminhoes
 /servicos/central-concreto
 /servicos/reforma-chassis
 /servicos/estruturas-metalicas
 ```
 
-Expected: HTTP 200 e cada rota de serviço entrega o HTML específico, não a home SPA.
+Expected: cada página mantém canonical, H1, Service schema e CTA contextual.
 
-- [ ] **Step 3: Final commit only if verification required a fix**
+- [ ] **Step 3: Preview/production validation**
 
-Se nenhum ajuste for necessário, não criar commit vazio.
+Validar as rotas por HTTP no ambiente que não estiver bloqueado pela proteção SSO. Se o preview bloquear rotas profundas, registrar a limitação e repetir a prova no alias público após merge.
