@@ -12,6 +12,7 @@ import {
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const app = readFileSync(path.join(root, 'src', 'App.jsx'), 'utf8')
+const dialog = readFileSync(path.join(root, 'src', 'TicketRequestDialog.jsx'), 'utf8')
 
 const service = {
   slug: 'manutencao-caminhoes',
@@ -85,12 +86,18 @@ test('WhatsApp recebe Ticket público e resumo útil depois da persistência', (
   assert.match(url, /^https:\/\/wa\.me\/5547991214232\?text=/)
 })
 
-test('home usa formulário progressivo para os CTAs principais', () => {
+test('home abre o formulário pelos CTAs principais', () => {
   assert.match(app, /TicketRequestDialog/)
   assert.match(app, /data-ticket-trigger="hero"/)
   assert.match(app, /data-ticket-trigger="contact"/)
-  assert.match(app, /step === 1/)
-  assert.match(app, /step === 2/)
-  assert.match(app, /step === 3/)
-  assert.match(app, /website/)
+})
+
+test('formulário é progressivo, persiste antes do WhatsApp e informa privacidade', () => {
+  assert.match(dialog, /step === 1/)
+  assert.match(dialog, /step === 2/)
+  assert.match(dialog, /step === 3/)
+  assert.match(dialog, /website/)
+  assert.match(dialog, /await submitTicket/)
+  assert.match(dialog, /buildTicketWhatsAppUrl/)
+  assert.match(dialog, /\/privacidade/)
 })
