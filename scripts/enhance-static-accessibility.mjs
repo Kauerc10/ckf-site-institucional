@@ -1,0 +1,56 @@
+#!/usr/bin/env node
+import { readFileSync, writeFileSync } from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+import { SERVICE_PAGES } from '../service-pages.mjs'
+import { buildWhatsAppUrl } from '../src/whatsapp.js'
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
+const client = path.join(root, 'dist', 'client')
+
+function enhanceServicePage(page) {
+  const file = path.join(client, 'servicos', page.slug, 'index.html')
+  const whatsapp = buildWhatsAppUrl({ service: page.ctaService })
+  let html = readFileSync(file, 'utf8')
+
+  const stylesheetMarker = '    <link rel="stylesheet" href="/service-pages.css" />'
+  const bodyMarker = '  <body class="service-page">\n    <main>'
+  const headerCtaMarker = `        <a class="button button--small" href="${whatsapp}" target="_blank" rel="noreferrer">Pedir orçamento</a>`
+
+  for (const marker of [stylesheetMarker, bodyMarker, headerCtaMarker]) {
+    if (!html.includes(marker)) {
+      throw new Error(`Missing accessibility injection marker in ${page.slug}`)
+    }
+  }
+
+  html = html.replace(
+    stylesheetMarker,
+    `${stylesheetMarker}\n    <link rel="stylesheet" href="/mobile-a11y.css" />`,
+  )
+
+  html = html.replace(
+    bodyMarker,
+    `  <body class="service-page">\n    <a class="skip-link" href="#service-content">Pular para o conteúdo</a>\n    <main id="service-content">`,
+  )
+
+  const mobileMenu = `        <details class="mobile-menu">
+          <summary aria-label="Abrir menu de navegação">Menu</summary>
+          <nav aria-label="Navegação móvel">
+            <a href="/#servicos">Serviços</a>
+            <a href="/#capacidade">Estrutura</a>
+            <a href="/#sobre">Quem somos</a>
+            <a href="/#processo">Como trabalhamos</a>
+            <a href="/#localizacao">Localização</a>
+            <a href="/#contato">Contato</a>
+            <a class="mobile-menu__cta" href="${whatsapp}" target="_blank" rel="noreferrer">Pedir orçamento</a>
+          </nav>
+        </details>`
+
+  html = html.replace(headerCtaMarker, `${headerCtaMarker}\n${mobileMenu}`)
+  writeFileSync(file, html)
+}
+
+for (const page of SERVICE_PAGES) enhanceServicePage(page)
+
+console.log(`Enhanced accessibility for ${SERVICE_PAGES.length} static service pages`)
