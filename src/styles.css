@@ -46,9 +46,9 @@ td a { display:grid; width:31px; height:31px; place-items:center; border:1px sol
 @media (max-width:800px) { .hero__weld-glow { right:11%; bottom:27%; }.capability { padding:68px 0; }.capability__heading { display:block; margin-bottom:29px; }.capability h2 { font-size:49px; }.capability__heading>p { margin-top:20px; }.capability__gallery { grid-template-columns:1fr; gap:14px; }.capability__card { min-height:300px; }.capability__card:nth-child(3) { min-height:360px; } }
 @media (prefers-reduced-motion:reduce) { .hero__weld-glow { animation:none; } .service-card img,.capability__card img { transition:none; } }
 
-/* A foto da equipe preserva pessoas reais e abre espaço visual para a mensagem. */
-.trust>img { object-position:center 48%; }.trust:after { width:58%; background:linear-gradient(90deg,rgba(9,12,13,.96) 0%,rgba(9,12,13,.79) 43%,rgba(9,12,13,.1) 82%); }
-@media (max-width:800px) { .trust>img { object-position:58% center; }.trust:after { width:100%; background:linear-gradient(90deg,rgba(9,12,13,.9),rgba(9,12,13,.58) 68%,rgba(9,12,13,.16)); } }
+/* A prova social mostra a equipe inteira, sem recortes nem texto sobre a foto. */
+.trust { height:auto; padding:72px 0; background:#080a0b; }.trust:after { display:none; }.trust__layout { display:grid; grid-template-columns:minmax(330px,.75fr) minmax(0,1.25fr); overflow:hidden; border:1px solid rgba(246,185,0,.55); background:#101516; }.trust__copy { position:static; inset:auto; display:flex; flex-direction:column; justify-content:center; width:auto; padding:56px clamp(32px,5vw,72px); background:#101516; }.trust h2 { max-width:440px; font-size:clamp(50px,5vw,68px); }.trust__media { min-width:0; margin:0; aspect-ratio:1547 / 1015; background:#090c0d; }.trust__media img { display:block; width:100%; height:100%; object-fit:contain; object-position:center; }
+@media (max-width:800px) { .trust { height:auto; padding:56px 0 0; }.trust__layout { display:flex; flex-direction:column; border-inline:0; }.trust__copy { min-height:0; padding:48px 24px; }.trust h2 { font-size:49px; }.trust__copy>p:last-child { margin-top:18px; font-size:17px; }.trust__media { width:100%; aspect-ratio:1547 / 1015; } }
 
 /* Os sócios ficam em profundidades diferentes, com a moldura abraçando a dupla. */
 .about__portraits:before { right:4%; left:5%; width:auto; }
