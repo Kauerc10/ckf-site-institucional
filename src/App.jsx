@@ -12,8 +12,9 @@ import {
   FaWrench,
 } from 'react-icons/fa6'
 import './styles.css'
+import { CONTACTS, buildWhatsAppUrl } from './whatsapp.js'
 
-const WHATSAPP = 'https://wa.me/5547991214232?text=Olá%2C%20gostaria%20de%20solicitar%20um%20orçamento.'
+const WHATSAPP = buildWhatsAppUrl()
 const MAPS = 'https://www.google.com/maps/search/?api=1&query=Rodovia%20BR-101%2C%206780%2C%20Galp%C3%A3o%2001%20Sala%2001%2C%20Espinheiros%2C%20Itaja%C3%AD%20-%20SC%2C%2088317-000'
 
 const serviceHighlights = [
@@ -57,23 +58,23 @@ export function App() {
       <header className="topbar">
         <a className="brand" href="#inicio" aria-label="CKF Manutenção - Início"><img src="/assets/logo-ckf.png" alt="CKF Manutenção" /></a>
         <nav aria-label="Navegação principal"><a href="#servicos">Serviços</a><a href="#capacidade">Estrutura</a><a href="#sobre">Quem somos</a><a href="#processo">Como trabalhamos</a><a href="#localizacao">Localização</a><a href="#contato">Contato</a></nav>
-        <a className="button button--small" href={WHATSAPP} target="_blank" rel="noreferrer"><FaWhatsapp /> Pedir orçamento</a>
+        <a className="button button--small" href={WHATSAPP} target="_blank" rel="noreferrer" data-cta-source="header"><FaWhatsapp /> Pedir orçamento</a>
       </header>
 
       <section className="hero" id="inicio">
         <img src="/assets/solda-ckf.webp" alt="Profissional da CKF realizando solda em chassi de caminhão" fetchPriority="high" />
         <span className="hero__weld-glow" aria-hidden="true" />
-        <div className="hero__content"><p className="eyebrow">CKF Manutenção</p><h1>Sua operação<br />precisa continuar.</h1><p>Manutenção pesada para quem mede resultado em operação, prazo e segurança.</p><a className="button" href={WHATSAPP} target="_blank" rel="noreferrer"><FaWhatsapp /> Solicitar orçamento</a></div>
+        <div className="hero__content"><p className="eyebrow">CKF Manutenção</p><h1>Sua operação<br />precisa continuar.</h1><p>Manutenção pesada para quem mede resultado em operação, prazo e segurança.</p><a className="button" href={WHATSAPP} target="_blank" rel="noreferrer" data-cta-source="hero"><FaWhatsapp /> Solicitar orçamento</a></div>
       </section>
 
       <section className="audience" aria-labelledby="audience-title"><div className="section-shell"><h2 id="audience-title">Quem confia, não para.</h2><div className="audience__items">{audiences.map(([Icon, label]) => <div className="audience__item" key={label}><Icon aria-hidden="true" /><span>{label}</span></div>)}</div></div></section>
 
       <section className="services section-shell" id="servicos">
         <div className="services__intro"><p className="eyebrow">Para cada desafio</p><h2>Soluções que sustentam a operação.</h2><p>Diagnóstico, execução e responsabilidade técnica para o trabalho seguir no ritmo certo.</p></div>
-        <div className="service-grid">{serviceHighlights.map((service, index) => <a className="service-card" key={service.title} href={WHATSAPP} target="_blank" rel="noreferrer" aria-label={`Solicitar orçamento para ${service.title}`}><img src={service.image} alt="" loading="lazy" /><span className="service-card__number">0{index + 1}</span><h3>{service.title}</h3></a>)}</div>
+        <div className="service-grid">{serviceHighlights.map((service, index) => <a className="service-card" key={service.title} href={buildWhatsAppUrl({ service: service.title })} target="_blank" rel="noreferrer" aria-label={`Solicitar orçamento para ${service.title}`} data-cta-source="service-highlight" data-cta-service={service.title}><img src={service.image} alt="" loading="lazy" /><span className="service-card__number">0{index + 1}</span><h3>{service.title}</h3></a>)}</div>
       </section>
 
-      <section className="service-list" aria-labelledby="service-list-title"><div className="section-shell service-list__layout"><div><p className="eyebrow">Manutenção geral</p><h2 id="service-list-title">O essencial para sua operação seguir.</h2><p>Serviços objetivos, atendimento direto e orçamento pelo WhatsApp.</p></div><div className="service-table-wrap"><table><thead><tr><th scope="col">Serviço</th><th scope="col">Como ajudamos</th><th aria-label="Solicitar orçamento" /></tr></thead><tbody>{serviceTable.map(([service, description]) => <tr key={service}><th scope="row">{service}</th><td>{description}</td><td><a href={WHATSAPP} target="_blank" rel="noreferrer" aria-label={`Falar sobre ${service} no WhatsApp`}><FaArrowRight aria-hidden="true" /></a></td></tr>)}</tbody></table><a className="text-link" href={WHATSAPP} target="_blank" rel="noreferrer"><FaWhatsapp /> Falar sobre um serviço <FaArrowRight aria-hidden="true" /></a></div></div></section>
+      <section className="service-list" aria-labelledby="service-list-title"><div className="section-shell service-list__layout"><div><p className="eyebrow">Manutenção geral</p><h2 id="service-list-title">O essencial para sua operação seguir.</h2><p>Serviços objetivos, atendimento direto e orçamento pelo WhatsApp.</p></div><div className="service-table-wrap"><table><thead><tr><th scope="col">Serviço</th><th scope="col">Como ajudamos</th><th aria-label="Solicitar orçamento" /></tr></thead><tbody>{serviceTable.map(([service, description]) => <tr key={service}><th scope="row">{service}</th><td>{description}</td><td><a href={buildWhatsAppUrl({ service })} target="_blank" rel="noreferrer" aria-label={`Falar sobre ${service} no WhatsApp`} data-cta-source="service-table" data-cta-service={service}><FaArrowRight aria-hidden="true" /></a></td></tr>)}</tbody></table><a className="text-link" href={WHATSAPP} target="_blank" rel="noreferrer" data-cta-source="service-list"><FaWhatsapp /> Falar sobre um serviço <FaArrowRight aria-hidden="true" /></a></div></div></section>
 
       <section className="capability" id="capacidade"><div className="section-shell"><div className="capability__heading"><div><p className="eyebrow">Estrutura em campo</p><h2>Capacidade para ir além do reparo.</h2></div><p>Do galpão à obra, a CKF entra com solução técnica, mão de obra e responsabilidade pela entrega.</p></div><div className="capability__gallery">{capabilityGallery.map(([title, text, image]) => <article className="capability__card" key={title}><img src={image} alt="" loading="lazy" /><div><h3>{title}</h3><p>{text}</p></div></article>)}</div></div></section>
 
@@ -87,9 +88,9 @@ export function App() {
 
       <section className="location" id="localizacao"><div className="section-shell location__card"><img src="/assets/real/fachada-real.webp" alt="Fachada da unidade da CKF Manutenção" loading="lazy" /><div className="location__copy"><p className="eyebrow">Nossa unidade</p><h2>Venha conversar com a equipe.</h2><address><FaLocationDot aria-hidden="true" /><span>Rodovia BR-101, 6780<br />Galpão 01, Sala 01 · Espinheiros<br />Itajaí · SC · 88317-000</span></address><a className="button" href={MAPS} target="_blank" rel="noreferrer"><FaMapLocationDot /> Abrir rota no Maps</a></div></div></section>
 
-      <section className="contact" id="contato"><div className="section-shell contact__wrap"><div><FaWhatsapp className="contact__icon" aria-hidden="true" /><div><h2>Sua operação não pode esperar.</h2><p>Fale com a CKF, explique o cenário e receba um retorno direto pelo WhatsApp.</p></div></div><a className="button" href={WHATSAPP} target="_blank" rel="noreferrer"><FaWhatsapp /> Pedir orçamento</a></div></section>
+      <section className="contact" id="contato"><div className="section-shell contact__wrap"><div><FaWhatsapp className="contact__icon" aria-hidden="true" /><div><h2>Sua operação não pode esperar.</h2><p>Fale com a CKF, explique o cenário e receba um retorno direto pelo WhatsApp.</p></div></div><a className="button" href={WHATSAPP} target="_blank" rel="noreferrer" data-cta-source="contact"><FaWhatsapp /> Pedir orçamento</a></div></section>
 
-      <footer><div className="footer__inner section-shell"><div><img src="/assets/logo-ckf.png" alt="CKF Manutenção" /><p>Soluções em manutenção geral para caminhões, máquinas, concreto, equipamentos e estruturas.</p></div><div><h3>Fale com a gente</h3><a href={WHATSAPP} target="_blank" rel="noreferrer"><FaWhatsapp /> (47) 99121-4232</a><a href={WHATSAPP} target="_blank" rel="noreferrer"><FaWhatsapp /> (47) 99913-0409</a><p>Atendimento rápido pelo WhatsApp.</p></div><div><h3>Manutenção geral</h3><p>Suspensão · Solda · Preventiva · Freios<br />Hidráulica · Reforma · Pintura · Embreagem</p></div></div></footer>
+      <footer><div className="footer__inner section-shell"><div><img src="/assets/logo-ckf.png" alt="CKF Manutenção" /><p>Soluções em manutenção geral para caminhões, máquinas, concreto, equipamentos e estruturas.</p></div><div><h3>Fale com a gente</h3><a href={buildWhatsAppUrl()} target="_blank" rel="noreferrer" data-cta-source="footer-primary" data-contact="primary"><FaWhatsapp /> {CONTACTS.primary.label}</a><a href={buildWhatsAppUrl({ contact: 'secondary' })} target="_blank" rel="noreferrer" data-cta-source="footer-secondary" data-contact="secondary"><FaWhatsapp /> {CONTACTS.secondary.label}</a><p>Atendimento rápido pelo WhatsApp.</p></div><div><h3>Manutenção geral</h3><p>Suspensão · Solda · Preventiva · Freios<br />Hidráulica · Reforma · Pintura · Embreagem</p></div></div></footer>
     </main>
   )
 }
