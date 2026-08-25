@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import {
   FaArrowRight,
   FaBuilding,
@@ -13,6 +14,7 @@ import {
 } from 'react-icons/fa6'
 import './styles.css'
 import { SERVICE_PAGES } from '../service-pages.mjs'
+import { TicketRequestDialog } from './TicketRequestDialog.jsx'
 import { CONTACTS, buildWhatsAppUrl } from './whatsapp.js'
 
 const WHATSAPP = buildWhatsAppUrl()
@@ -65,6 +67,20 @@ function MobileMenu() {
 }
 
 export function App() {
+  const [ticketDialog, setTicketDialog] = useState({ open: false, source: '', serviceSlug: '' })
+
+  function openTicket(source, serviceSlug = '') {
+    setTicketDialog({ open: true, source, serviceSlug })
+  }
+
+  useEffect(() => {
+    const params = new URLSearchParams(globalThis.location?.search ?? '')
+    const requestedSlug = params.get('orcamento') ?? ''
+    if (requestedSlug && SERVICE_PAGES.some((service) => service.slug === requestedSlug)) {
+      openTicket(params.get('cta') || 'service-page', requestedSlug)
+    }
+  }, [])
+
   return (
     <main>
       <a className="skip-link" href="#inicio">Pular para o conteúdo</a>
@@ -78,7 +94,7 @@ export function App() {
       <section className="hero" id="inicio">
         <img src="/assets/solda-ckf.webp" alt="Profissional da CKF realizando solda em chassi de caminhão" fetchPriority="high" />
         <span className="hero__weld-glow" aria-hidden="true" />
-        <div className="hero__content"><p className="eyebrow">CKF Manutenção</p><h1>Sua operação<br />precisa continuar.</h1><p>Manutenção pesada para quem mede resultado em operação, prazo e segurança.</p><a className="button" href={WHATSAPP} target="_blank" rel="noreferrer" data-cta-source="hero"><FaWhatsapp /> Solicitar orçamento</a></div>
+        <div className="hero__content"><p className="eyebrow">CKF Manutenção</p><h1>Sua operação<br />precisa continuar.</h1><p>Manutenção pesada para quem mede resultado em operação, prazo e segurança.</p><button className="button" type="button" data-ticket-trigger="hero" onClick={() => openTicket('hero')}><FaWhatsapp /> Solicitar orçamento</button></div>
       </section>
 
       <section className="audience" aria-labelledby="audience-title"><div className="section-shell"><h2 id="audience-title">Quem confia, não para.</h2><div className="audience__items">{audiences.map(([Icon, label]) => <div className="audience__item" key={label}><Icon aria-hidden="true" /><span>{label}</span></div>)}</div></div></section>
@@ -102,9 +118,16 @@ export function App() {
 
       <section className="location" id="localizacao"><div className="section-shell location__card"><img src="/assets/real/fachada-real.webp" alt="Fachada da unidade da CKF Manutenção" loading="lazy" /><div className="location__copy"><p className="eyebrow">Nossa unidade</p><h2>Venha conversar com a equipe.</h2><address><FaLocationDot aria-hidden="true" /><span>Rodovia BR-101, 6780<br />Galpão 01, Sala 01 · Espinheiros<br />Itajaí · SC · 88317-000</span></address><a className="button" href={MAPS} target="_blank" rel="noreferrer"><FaMapLocationDot /> Abrir rota no Maps</a></div></div></section>
 
-      <section className="contact" id="contato"><div className="section-shell contact__wrap"><div><FaWhatsapp className="contact__icon" aria-hidden="true" /><div><h2>Sua operação não pode esperar.</h2><p>Fale com a CKF, explique o cenário e receba um retorno direto pelo WhatsApp.</p></div></div><a className="button" href={WHATSAPP} target="_blank" rel="noreferrer" data-cta-source="contact"><FaWhatsapp /> Pedir orçamento</a></div></section>
+      <section className="contact" id="contato"><div className="section-shell contact__wrap"><div><FaWhatsapp className="contact__icon" aria-hidden="true" /><div><h2>Sua operação não pode esperar.</h2><p>Registre o cenário em poucos passos e continue o atendimento com a equipe pelo WhatsApp.</p></div></div><button className="button" type="button" data-ticket-trigger="contact" onClick={() => openTicket('contact')}><FaWhatsapp /> Pedir orçamento</button></div></section>
 
       <footer><div className="footer__inner section-shell"><div><img src="/assets/logo-ckf.png" alt="CKF Manutenção" /><p>Soluções em manutenção geral para caminhões, máquinas, concreto, equipamentos e estruturas.</p></div><div><h3>Fale com a gente</h3><a href={buildWhatsAppUrl()} target="_blank" rel="noreferrer" data-cta-source="footer-primary" data-contact="primary"><FaWhatsapp /> {CONTACTS.primary.label}</a><a href={buildWhatsAppUrl({ contact: 'secondary' })} target="_blank" rel="noreferrer" data-cta-source="footer-secondary" data-contact="secondary"><FaWhatsapp /> {CONTACTS.secondary.label}</a><p>Atendimento rápido pelo WhatsApp.</p></div><div><h3>Manutenção geral</h3><p>Suspensão · Solda · Preventiva · Freios<br />Hidráulica · Reforma · Pintura · Embreagem</p></div></div></footer>
+
+      <TicketRequestDialog
+        open={ticketDialog.open}
+        source={ticketDialog.source}
+        initialServiceSlug={ticketDialog.serviceSlug}
+        onClose={() => setTicketDialog({ open: false, source: '', serviceSlug: '' })}
+      />
     </main>
   )
 }
