@@ -40,7 +40,8 @@ Princípios:
 - o site não recebe acesso direto às tabelas internas do CKF Orçamentos;
 - tickets são uma entidade separada de clientes e orçamentos;
 - transformar um ticket em cliente/orçamento será uma ação posterior e explícita;
-- SEO e captura compartilham o mesmo catálogo canônico de serviços.
+- SEO e captura compartilham a mesma taxonomia pública de serviços;
+- o banco e a Edge Function pertencem ao repositório que já é fonte de verdade do Supabase operacional.
 
 ## 4. Experiência de solicitação
 
@@ -88,6 +89,8 @@ Após persistir o ticket:
 3. WhatsApp abre com uma mensagem contextual contendo identificador, serviço, equipamento, problema e urgência;
 4. o identificador permite localizar rapidamente o registro no futuro módulo Tickets.
 
+O `public_id` deve ser aleatório, curto, não sequencial e separado do UUID interno. Exemplo visual: `CKF-7K4M2Q`.
+
 ## 5. Modelo de dados
 
 Tabela proposta: `public.site_tickets`.
@@ -97,6 +100,7 @@ Campos principais:
 - `id uuid primary key`;
 - `public_id text unique not null`;
 - `status text not null`;
+- `service_category text not null`;
 - `service_slug text not null`;
 - `service_name text not null`;
 - `equipment_type text not null default ''`;
@@ -124,7 +128,23 @@ Campos principais:
 - `created_at timestamptz not null default now()`;
 - `updated_at timestamptz not null default now()`.
 
-Status iniciais previstos:
+Categorias estáveis iniciais:
+
+- `heavy_machinery`;
+- `trucks`;
+- `concrete_plant`;
+- `industrial_maintenance`;
+- `metal_structures`;
+- `industrial_welding`;
+- `hydraulics`;
+- `chassis`;
+- `preventive`;
+- `corrective`;
+- `other`.
+
+A categoria é o contrato estável validado pelo backend. `service_slug` e `service_name` preservam a intenção específica da landing page sem obrigar uma atualização da Edge Function a cada nova página SEO.
+
+Status iniciais:
 
 - `new`;
 - `contacted`;
@@ -142,7 +162,7 @@ O site público não controla os status operacionais após a criação.
 
 O navegador não poderá inserir diretamente em `site_tickets`.
 
-A escrita pública passa exclusivamente pela Edge Function `capture-site-ticket`.
+A escrita pública passa exclusivamente pela Edge Function `capture-site-ticket` hospedada no mesmo projeto Supabase operacional do CKF Orçamentos.
 
 ### 6.2 Validação server-side
 
@@ -151,11 +171,12 @@ A função deve:
 - aceitar apenas origens CKF autorizadas;
 - validar comprimento e formato de todos os campos;
 - normalizar telefone;
-- validar `service_slug` contra catálogo conhecido;
+- validar `service_category` contra enum estável;
+- normalizar e limitar `service_slug` e `service_name`;
 - rejeitar campos inesperados sensíveis;
 - aplicar idempotência;
 - validar honeypot;
-- aplicar rate limit por sinal não reversível do cliente quando tecnicamente disponível;
+- aplicar rate limit sem persistir IP bruto como dado operacional;
 - limitar tamanho do payload;
 - registrar apenas contexto necessário;
 - nunca devolver o UUID interno.
@@ -163,15 +184,25 @@ A função deve:
 ### 6.3 RLS e grants
 
 - `anon`: sem SELECT/INSERT/UPDATE/DELETE na tabela;
-- `authenticated`: acesso será definido no repositório CKF Orçamentos em etapa própria;
+- `authenticated`: acesso definido pelas políticas do sistema interno;
 - `service_role`: somente dentro de ambiente servidor controlado;
 - nenhuma credencial secreta será exposta por `VITE_*`.
 
 ## 7. Contrato de integração com CKF Orçamentos
 
-O Ticket Engine será criado de modo compatível com o sistema interno existente, mas sem modificar automaticamente clientes/orçamentos nesta fase.
+A infraestrutura de dados do Ticket Engine nasce no repositório `ckf-manutencao-orcamentos`, porque esse repositório já versiona as migrações e Edge Functions do Supabase operacional.
 
-Integração futura:
+A primeira etapa de backend cria somente:
+
+- migração de `site_tickets`;
+- índices e constraints;
+- políticas/grants;
+- Edge Function `capture-site-ticket`;
+- testes do contrato público.
+
+Ela **não** cria ainda a interface interna de Tickets e não altera automaticamente `clientes` ou `orcamentos`.
+
+Integração operacional futura:
 
 `Ticket -> revisar -> localizar cliente existente ou criar cliente -> criar orçamento -> vincular converted_cliente_id e converted_orcamento_id`
 
@@ -194,7 +225,7 @@ O site deve ter uma fonte de verdade única para:
 
 - slug;
 - nome comercial;
-- categoria;
+- categoria estável;
 - descrição;
 - CTA;
 - termos relacionados;
@@ -204,7 +235,9 @@ O site deve ter uma fonte de verdade única para:
 - schema estruturado;
 - dados usados no ticket.
 
-Esse catálogo alimentará home, hub `/servicos`, páginas estáticas, sitemap, links internos, formulário e validação do backend.
+Esse catálogo alimentará home, hub `/servicos`, páginas estáticas, sitemap, links internos e formulário.
+
+O backend confia apenas na categoria estável e trata `service_slug`/`service_name` como dados normalizados do contexto público, não como autorização.
 
 ## 9. Arquitetura SEO
 
@@ -315,6 +348,7 @@ Eventos mínimos:
 
 Contexto quando aplicável:
 
+- `service_category`;
 - `service_slug`;
 - `landing_path`;
 - `cta_source`;
@@ -323,7 +357,7 @@ Contexto quando aplicável:
 
 Não registrar descrição livre, telefone, e-mail ou nome em analytics.
 
-## 13. Privacidade
+## 13. Privacidade e retenção
 
 Criar página `/privacidade` antes do lançamento do formulário público.
 
@@ -331,7 +365,13 @@ A interface deve explicar, em linguagem simples, que os dados informados serão 
 
 Evitar consentimentos genéricos de marketing quando a finalidade é somente responder ao pedido do usuário.
 
-Definir política de retenção operacional dos tickets antes da entrada em produção definitiva.
+Política técnica inicial de retenção:
+
+- tickets marcados como `spam`: exclusão automática após 30 dias;
+- tickets `lost` sem vínculo comercial: exclusão após 180 dias;
+- tickets `converted`: permanecem vinculados ao registro comercial correspondente e seguem a política operacional do sistema interno.
+
+Nenhum IP bruto deve fazer parte do registro permanente do ticket.
 
 ## 14. UX e conversão
 
@@ -395,6 +435,7 @@ Cobertura mínima:
 - canonical/schema;
 - serialização/validação de ticket;
 - normalização de campos;
+- geração e unicidade de `public_id`;
 - idempotência;
 - honeypot;
 - falha de rede;
@@ -412,22 +453,30 @@ Responsável por:
 
 - páginas públicas;
 - SEO;
-- formulário;
 - catálogo público;
-- envio do ticket;
+- formulário;
+- cliente HTTP de `capture-site-ticket`;
 - experiência de sucesso/WhatsApp;
+- analytics público;
 - privacidade pública.
+
+O site não contém migração da tabela operacional nem credencial privilegiada do Supabase.
 
 ### ckf-manutencao-orcamentos
 
-Responsável por:
+Responsável desde a primeira etapa de backend por:
 
-- schema operacional de tickets e migrações compartilhadas, quando a integração for implementada;
-- fila interna;
+- migração `site_tickets`;
+- constraints, índices, RLS e grants;
+- Edge Function `capture-site-ticket`;
+- testes server-side do contrato de captura;
+- futuramente, fila interna de Tickets;
 - qualificação;
 - transformação em cliente;
 - criação de orçamento;
 - histórico e gestão de status.
+
+Isso mantém uma única fonte de verdade para o banco operacional da CKF.
 
 ### ckf-design
 
@@ -441,15 +490,15 @@ Responsável por:
 Sem detalhar tarefas de implementação, a ordem de dependência é:
 
 1. fechar navegação e links internos atuais;
-2. consolidar catálogo canônico de serviços;
-3. implementar Ticket Engine público com contrato testável;
-4. criar backend seguro de captura;
-5. ampliar cluster SEO/hub;
-6. aplicar captura às páginas de serviço;
+2. consolidar catálogo canônico de serviços no site;
+3. criar schema e Edge Function de tickets no `ckf-manutencao-orcamentos`;
+4. implementar Ticket Engine público no site usando somente o contrato HTTP;
+5. ampliar cluster SEO e hub `/servicos`;
+6. aplicar o fluxo de solicitação às páginas de serviço;
 7. adicionar privacidade e analytics;
 8. conectar domínio definitivo;
-9. validar produção/indexação;
-10. implementar módulo Tickets no CKF Orçamentos em uma etapa separada.
+9. validar produção, Core Web Vitals e indexação;
+10. implementar a interface interna do módulo Tickets no CKF Orçamentos em etapa separada.
 
 ## 20. Critérios de aceite arquitetural
 
@@ -457,9 +506,10 @@ A arquitetura estará pronta quando:
 
 - nenhuma experiência pública usar o termo `lead`;
 - uma solicitação puder ser persistida antes do WhatsApp;
-- o visitante receber identificador público seguro;
+- o visitante receber identificador público aleatório e seguro;
 - nenhum segredo existir no frontend;
 - o site não tiver acesso anônimo às tabelas internas;
+- o backend operacional estiver versionado somente no repositório CKF Orçamentos;
 - cada página de serviço tiver intenção própria e HTML indexável;
 - páginas estiverem interligadas semanticamente;
 - sitemap/canonical/schema forem coerentes com o domínio final;
