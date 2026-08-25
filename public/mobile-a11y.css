@@ -1,0 +1,85 @@
+.skip-link {
+  position:fixed;
+  z-index:1000;
+  top:10px;
+  left:10px;
+  padding:12px 16px;
+  background:var(--yellow);
+  color:var(--ink);
+  font:800 16px/1 'Barlow Condensed',sans-serif;
+  text-transform:uppercase;
+  transform:translateY(-180%);
+  transition:transform .18s ease;
+}
+.skip-link:focus { transform:translateY(0); }
+
+.mobile-menu { display:none; position:relative; }
+.mobile-menu summary {
+  min-width:48px;
+  min-height:44px;
+  display:grid;
+  place-items:center;
+  padding:0 12px;
+  border:1px solid rgba(246,185,0,.7);
+  color:var(--yellow);
+  cursor:pointer;
+  list-style:none;
+  font:800 15px/1 'Barlow Condensed',sans-serif;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+.mobile-menu summary::-webkit-details-marker { display:none; }
+.mobile-menu[open] summary { background:var(--yellow); color:var(--ink); }
+.mobile-menu nav {
+  position:absolute;
+  top:calc(100% + 11px);
+  right:0;
+  width:min(286px,calc(100vw - 36px));
+  padding:10px;
+  border:1px solid rgba(246,185,0,.55);
+  background:#0b0f10;
+  box-shadow:0 18px 44px rgba(0,0,0,.4);
+}
+.mobile-menu nav a {
+  min-height:44px;
+  display:flex;
+  align-items:center;
+  padding:0 12px;
+  border-bottom:1px solid rgba(247,247,244,.09);
+  font:700 16px/1 'Barlow Condensed',sans-serif;
+  text-transform:uppercase;
+}
+.mobile-menu nav a:last-child { border-bottom:0; }
+.mobile-menu nav a:hover { color:var(--yellow); }
+.mobile-menu nav .mobile-menu__cta {
+  margin-top:8px;
+  justify-content:center;
+  border:0;
+  background:var(--yellow);
+  color:var(--ink);
+}
+
+:where(a,button,summary,[tabindex]):focus-visible {
+  outline:3px solid var(--yellow);
+  outline-offset:4px;
+}
+
+@media (max-width:800px) {
+  .mobile-menu { display:block; }
+  .mobile-menu nav { display:flex !important; flex-direction:column; gap:0; }
+}
+
+@media (max-width:480px) {
+  .topbar > .button--small { display:none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior:auto !important; }
+  *,*::before,*::after {
+    scroll-behavior:auto !important;
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+  }
+  .button:hover,.service-card:hover img { transform:none !important; }
+}

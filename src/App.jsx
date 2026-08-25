@@ -52,13 +52,32 @@ const process = [
   [FaScrewdriverWrench, '03', 'Execução e entrega', 'Mão de obra especializada e teste final para a operação voltar com segurança.'],
 ]
 
+function MobileMenu() {
+  return (
+    <details className="mobile-menu">
+      <summary aria-label="Abrir menu de navegação">Menu</summary>
+      <nav aria-label="Navegação móvel">
+        <a href="#servicos">Serviços</a>
+        <a href="#capacidade">Estrutura</a>
+        <a href="#sobre">Quem somos</a>
+        <a href="#processo">Como trabalhamos</a>
+        <a href="#localizacao">Localização</a>
+        <a href="#contato">Contato</a>
+        <a className="mobile-menu__cta" href={WHATSAPP} target="_blank" rel="noreferrer" data-cta-source="mobile-menu">Pedir orçamento</a>
+      </nav>
+    </details>
+  )
+}
+
 export function App() {
   return (
     <main>
+      <a className="skip-link" href="#inicio">Pular para o conteúdo</a>
       <header className="topbar">
         <a className="brand" href="#inicio" aria-label="CKF Manutenção - Início"><img src="/assets/logo-ckf.png" alt="CKF Manutenção" /></a>
-        <nav aria-label="Navegação principal"><a href="#servicos">Serviços</a><a href="#capacidade">Estrutura</a><a href="#sobre">Quem somos</a><a href="#processo">Como trabalhamos</a><a href="#localizacao">Localização</a><a href="#contato">Contato</a></nav>
+        <nav className="desktop-nav" aria-label="Navegação principal"><a href="#servicos">Serviços</a><a href="#capacidade">Estrutura</a><a href="#sobre">Quem somos</a><a href="#processo">Como trabalhamos</a><a href="#localizacao">Localização</a><a href="#contato">Contato</a></nav>
         <a className="button button--small" href={WHATSAPP} target="_blank" rel="noreferrer" data-cta-source="header"><FaWhatsapp /> Pedir orçamento</a>
+        <MobileMenu />
       </header>
 
       <section className="hero" id="inicio">
