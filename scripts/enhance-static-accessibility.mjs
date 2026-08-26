@@ -18,10 +18,12 @@ function enhanceServicePage(page) {
     throw new Error(`Missing accessibility injection marker in ${page.slug}`)
   }
 
-  html = html.replace(
-    '<link rel="stylesheet" href="/service-pages.css" />',
-    '<link rel="stylesheet" href="/service-pages.css" />\n    <link rel="stylesheet" href="/mobile-a11y.css" />',
-  )
+  if (!html.includes('href="/mobile-a11y.css"')) {
+    html = html.replace(
+      '<link rel="stylesheet" href="/service-pages.css" />',
+      '<link rel="stylesheet" href="/service-pages.css" />\n    <link rel="stylesheet" href="/mobile-a11y.css" />',
+    )
+  }
   html = html.replace(
     '<body class="service-page"><main>',
     '<body class="service-page"><a class="skip-link" href="#service-content">Pular para o conteúdo</a><main id="service-content">',
