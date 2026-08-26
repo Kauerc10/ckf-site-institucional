@@ -9,7 +9,6 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const app = readFileSync(path.join(root, 'src', 'App.jsx'), 'utf8')
 const dialog = readFileSync(path.join(root, 'src', 'TicketRequestDialog.jsx'), 'utf8')
 const mobileCss = readFileSync(path.join(root, 'public', 'mobile-a11y.css'), 'utf8')
-const styles = readFileSync(path.join(root, 'src', 'styles.css'), 'utf8')
 const vercel = JSON.parse(readFileSync(path.join(root, 'vercel.json'), 'utf8'))
 
 const SUPABASE_ORIGIN = 'https://xsvvdhznrdkygmvganwb.supabase.co'
@@ -72,7 +71,7 @@ test('header muda para menu compacto antes de entrar na faixa apertada de tablet
 })
 
 test('atalhos de serviço respeitam alvo mínimo de toque no mobile', () => {
-  assert.match(styles, /@media \(max-width:800px\)[\s\S]*?td a\s*\{[^}]*width:44px;[^}]*height:44px;/)
+  assert.match(mobileCss, /@media \(max-width:800px\)[\s\S]*?td a\s*\{[^}]*width:44px;[^}]*height:44px;/)
 })
 
 test('WhatsApp direto é nomeado como atalho, não como formulário de orçamento', () => {
