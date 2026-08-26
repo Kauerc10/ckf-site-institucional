@@ -98,6 +98,13 @@ test('tipografia e geometria das páginas estáticas seguem a linguagem industri
   assert.doesNotMatch(serviceStyles, /border-radius:999px/, 'pills arredondadas fogem da geometria industrial da CKF')
 })
 
+test('tabela de serviço vira leitura vertical no mobile em vez de desktop espremido', () => {
+  assert.doesNotMatch(serviceStyles, /\.service-page \.service-page__table table\s*\{\s*min-width:560px/, 'tabela não deve exigir rolagem horizontal no mobile')
+  assert.match(serviceStyles, /\.service-page \.service-page__table tbody\s*\{[^}]*display:grid/s)
+  assert.match(serviceStyles, /\.service-page \.service-page__table tbody tr\s*\{[^}]*display:block/s)
+  assert.match(serviceStyles, /\.service-page \.service-page__table tbody td\s*\{[^}]*display:block/s)
+})
+
 test('landing pages registram Solicitação antes do CTA principal de WhatsApp', () => {
   for (const page of SERVICE_PAGES) {
     const html = readFileSync(path.join(client, 'servicos', page.slug, 'index.html'), 'utf8')
