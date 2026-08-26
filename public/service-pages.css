@@ -47,8 +47,13 @@
   .service-page .hero h1 { font-size:48px; }
   .service-page .service-list__layout { display:block; }
   .service-page .service-list__layout>div:first-child { margin-bottom:32px; }
-  .service-page .service-page__table { overflow-x:auto; }
-  .service-page .service-page__table table { min-width:560px; }
+  .service-page .service-page__table { border:0; overflow:visible; }
+  .service-page .service-page__table table,
+  .service-page .service-page__table tbody { display:block; width:100%; }
+  .service-page .service-page__table tbody { display:grid; gap:12px; }
+  .service-page .service-page__table tbody tr { display:block; padding:18px; border:1px solid rgba(255,255,255,.13); background:rgba(255,255,255,.025); }
+  .service-page .service-page__table tbody th { display:block; width:100%; padding:0; border:0; color:var(--paper); font-size:22px; line-height:1; }
+  .service-page .service-page__table tbody td { display:block; width:100%; padding:0; margin-top:10px; border:0; color:var(--muted); font-size:15px; line-height:1.45; }
   .service-page__hub { padding-top:72px; padding-bottom:72px; }
   .service-page__hub-grid { grid-template-columns:1fr; }
   .service-page__hub-card { min-height:0; padding:24px; }
