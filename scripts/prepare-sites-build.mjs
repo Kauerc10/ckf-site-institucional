@@ -23,9 +23,9 @@ if (new URL(siteUrl).protocol !== 'https:') throw new Error('SITE_URL must use H
 
 const builtHtml = readFileSync(index, 'utf8')
 if (!builtHtml.includes('__CKF_SITE_URL__')) throw new Error('Missing CKF site URL placeholder in built index.html')
-const stylesheetMatch = builtHtml.match(/<link rel="stylesheet"[^>]*href="([^"]+)"/)
-if (!stylesheetMatch) throw new Error('Missing Vite stylesheet in built index.html')
-const stylesheetHref = stylesheetMatch[1]
+const stylesheetHrefs = [...builtHtml.matchAll(/<link rel="stylesheet"[^>]*href="([^"]+)"/g)].map((match) => match[1])
+const stylesheetHref = stylesheetHrefs.find((href) => /^\/assets\/.*\.css$/.test(href))
+if (!stylesheetHref) throw new Error('Missing Vite bundle stylesheet in built index.html')
 
 function escapeHtml(value) {
   return String(value)
@@ -59,6 +59,7 @@ function baseHead({ title, description, canonical, image = '/assets/solda-ckf.we
     <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
     <link rel="stylesheet" href="${stylesheetHref}" />
     <link rel="stylesheet" href="/service-pages.css" />
+    <link rel="stylesheet" href="/mobile-a11y.css" />
     ${schemas}
     <title>${escapeHtml(title)}</title>`
 }
