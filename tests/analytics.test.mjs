@@ -16,6 +16,7 @@ const allowedEvents = new Set([
   'ticket_submit',
   'ticket_success',
   'ticket_error',
+  'ticket_close',
   'whatsapp_click',
 ])
 
@@ -50,6 +51,7 @@ test('instrumentação usa somente eventos do funil aprovado', () => {
   assert.match(dialog, /ticket_submit/)
   assert.match(dialog, /ticket_success/)
   assert.match(dialog, /ticket_error/)
+  assert.match(dialog, /ticket_close/)
   assert.match(app, /whatsapp_click/)
 })
 
