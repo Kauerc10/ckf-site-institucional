@@ -71,7 +71,7 @@ test('payload deriva serviço e atribuição sem vocabulário de lead', () => {
   assert.doesNotMatch(JSON.stringify(payload), /lead/i)
 })
 
-test('WhatsApp recebe Ticket público e resumo útil depois da persistência', () => {
+test('WhatsApp recebe a Solicitação pública e resumo útil depois da persistência', () => {
   const url = buildTicketWhatsAppUrl({
     publicId: 'ABC234',
     serviceName: 'Manutenção de caminhões',
@@ -80,7 +80,7 @@ test('WhatsApp recebe Ticket público e resumo útil depois da persistência', (
     urgency: 'parado',
   })
   const decoded = decodeURIComponent(url)
-  assert.match(decoded, /ABC234/)
+  assert.match(decoded, /Solicitação CKF #ABC234/)
   assert.match(decoded, /Manutenção de caminhões/)
   assert.match(decoded, /Veículo parado/)
   assert.match(url, /^https:\/\/wa\.me\/5547991214232\?text=/)
