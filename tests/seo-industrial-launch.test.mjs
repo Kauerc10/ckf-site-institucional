@@ -8,6 +8,7 @@ import { SERVICE_PAGES } from '../service-pages.mjs'
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const client = path.join(root, 'dist', 'client')
 const indexSource = readFileSync(path.join(root, 'index.html'), 'utf8')
+const serviceStyles = readFileSync(path.join(root, 'public', 'service-pages.css'), 'utf8')
 
 const requiredSlugs = [
   'manutencao-caminhoes',
@@ -68,6 +69,33 @@ test('páginas estáticas carregam o design system do Vite sem duplicar acessibi
       `mobile-a11y.css deve aparecer uma vez em ${route}`,
     )
   }
+})
+
+test('hub e privacidade preservam o shell institucional também no mobile', () => {
+  for (const route of ['servicos/index.html', 'privacidade/index.html']) {
+    const html = readFileSync(path.join(client, route), 'utf8')
+    assert.match(html, /aria-label="Navegação principal"/, `faltou navegação principal em ${route}`)
+    assert.match(html, /class="mobile-menu"/, `faltou menu móvel em ${route}`)
+    assert.match(html, /<footer>/, `faltou footer institucional em ${route}`)
+  }
+})
+
+test('tipografia e geometria das páginas estáticas seguem a linguagem industrial da home', () => {
+  for (const selector of [
+    '.service-page__related h2',
+    '.service-page__hub>h1',
+    '.service-page__hub-card h2',
+    '.service-page__legal h1',
+    '.service-page__legal h2',
+  ]) {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    assert.match(
+      serviceStyles,
+      new RegExp(`${escaped}\\s*\\{[^}]*Barlow Condensed`, 's'),
+      `faltou tipografia display em ${selector}`,
+    )
+  }
+  assert.doesNotMatch(serviceStyles, /border-radius:999px/, 'pills arredondadas fogem da geometria industrial da CKF')
 })
 
 test('landing pages registram Solicitação antes do CTA principal de WhatsApp', () => {
