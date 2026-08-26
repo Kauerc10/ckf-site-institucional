@@ -20,6 +20,7 @@ const article = `<article class="section-shell service-page__legal">
   <p class="eyebrow">Relacionamento comercial</p>
   <h1>Política de Comunicações e Marketing</h1>
   <p>Esta Política de Comunicações e Marketing explica como a CKF Manutenção pode utilizar dados de relacionamento para realizar contatos comerciais de forma compatível com o contexto em que as informações foram obtidas, respeitando a legislação aplicável, as expectativas do titular e as opções de oposição ou descadastro.</p>
+  <p>Para os tratamentos descritos nesta política, a controladora é <strong>CKF MANUTENCAO LTDA</strong>, inscrita no CNPJ sob nº <strong>57.461.028/0001-43</strong>, com sede na Rodovia BR-101, 6780, Galpão 01, Sala 01, Espinheiros, Itajaí/SC, CEP 88317-000.</p>
 
   <h2>Quais comunicações podemos realizar</h2>
   <p>Podemos entrar em contato para acompanhar Solicitações e orçamentos, retomar conversas comerciais, apresentar serviços relacionados ao equipamento ou à necessidade informada, lembrar sobre manutenção preventiva, comunicar novidades da CKF, divulgar condições comerciais, ofertas e campanhas pertinentes aos serviços prestados, além de realizar pesquisas de satisfação e comunicações institucionais relacionadas ao relacionamento com a empresa.</p>
