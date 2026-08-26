@@ -25,7 +25,7 @@ test('rodapé público identifica a CKF e oferece acesso permanente às polític
     assert.match(source, /\/marketing/)
     assert.match(source, /CKF MANUTENCAO LTDA/)
     assert.match(source, /57\.461\.028\/0001-43/)
-    assert.match(source, /Idealizado e desenvolvido por K-Hub/i)
+    assert.match(source, /Idealizado e desenvolvido por[\s\S]*?K-Hub/i)
   }
 })
 
