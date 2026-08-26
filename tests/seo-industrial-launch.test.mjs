@@ -51,6 +51,25 @@ test('build publica hub de serviços e política de privacidade indexáveis', ()
   assert.match(privacy, /WhatsApp/)
 })
 
+test('páginas estáticas carregam o design system do Vite sem duplicar acessibilidade', () => {
+  const routes = [
+    path.join(client, 'servicos', 'index.html'),
+    path.join(client, 'privacidade', 'index.html'),
+    ...SERVICE_PAGES.map((page) => path.join(client, 'servicos', page.slug, 'index.html')),
+  ]
+
+  for (const route of routes) {
+    const html = readFileSync(route, 'utf8')
+    assert.match(html, /href="\/assets\/[^"]+\.css"/, `faltou bundle CSS do Vite em ${route}`)
+    assert.match(html, /href="\/service-pages\.css"/, `faltou CSS específico em ${route}`)
+    assert.equal(
+      (html.match(/href="\/mobile-a11y\.css"/g) ?? []).length,
+      1,
+      `mobile-a11y.css deve aparecer uma vez em ${route}`,
+    )
+  }
+})
+
 test('landing pages registram Solicitação antes do CTA principal de WhatsApp', () => {
   for (const page of SERVICE_PAGES) {
     const html = readFileSync(path.join(client, 'servicos', page.slug, 'index.html'), 'utf8')
