@@ -70,6 +70,10 @@
   .mobile-menu nav { display:flex !important; flex-direction:column; gap:0; }
 }
 
+@media (max-width:800px) {
+  .service-table-wrap td a { width:44px; height:44px; }
+}
+
 @media (max-width:480px) {
   .topbar > .button--small { display:none; }
 }
