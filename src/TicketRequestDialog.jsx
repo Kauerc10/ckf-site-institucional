@@ -83,8 +83,8 @@ export function TicketRequestDialog({ open, source = 'unknown', initialServiceSl
 
   function closeDialog() {
     if (submitting) return
+    trackEvent('ticket_close', { page: pagePath(), serviceSlug, ctaSource: source, step, status: 'dismissed' })
     dialogRef.current?.close()
-    onClose?.()
   }
 
   async function handleSubmit(event) {
