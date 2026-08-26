@@ -23,3 +23,9 @@ test("Vercel configuration keeps SPA navigation and security headers", async () 
   assert.match(headers["Content-Security-Policy"], /frame-ancestors 'none'/);
   assert.equal(headers["X-Content-Type-Options"], "nosniff");
 });
+
+test("Vercel Git integration does not deploy automatically", async () => {
+  const config = JSON.parse(await readFile(new URL("vercel.json", root), "utf8"));
+
+  assert.equal(config.git?.deploymentEnabled, false);
+});
