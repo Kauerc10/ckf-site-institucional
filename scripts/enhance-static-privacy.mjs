@@ -12,7 +12,7 @@ const article = `<article class="section-shell service-page__legal">
   <p>Esta Política de Privacidade explica de forma transparente como a CKF Manutenção trata dados pessoais recebidos pelo site, pelas Solicitações de atendimento e pelos canais de contato vinculados à operação.</p>
 
   <h2>Controlador e escopo</h2>
-  <p>A CKF Manutenção é responsável pelas decisões sobre o tratamento dos dados pessoais coletados por este site para atendimento comercial e operacional. Esta política se aplica ao formulário de Solicitação, à navegação nas páginas institucionais e à continuidade voluntária do atendimento por WhatsApp.</p>
+  <p>A controladora dos dados pessoais tratados no contexto deste site e dos canais vinculados ao atendimento é <strong>CKF MANUTENCAO LTDA</strong>, inscrita no CNPJ sob nº <strong>57.461.028/0001-43</strong>, com sede na Rodovia BR-101, 6780, Galpão 01, Sala 01, Espinheiros, Itajaí/SC, CEP 88317-000. A CKF Manutenção é responsável pelas decisões sobre o tratamento dos dados pessoais coletados para atendimento comercial e operacional. Esta política se aplica ao formulário de Solicitação, à navegação nas páginas institucionais e à continuidade voluntária do atendimento por WhatsApp.</p>
 
   <h2>Dados tratados</h2>
   <p>Podemos tratar nome, telefone, e-mail opcional, empresa opcional, cidade e UF, tipo de equipamento, marca e modelo opcionais, descrição do problema e urgência. Também podemos registrar informações técnicas relacionadas à origem da visita, como página acessada, CTA utilizado, referrer e parâmetros de campanha, incluindo UTMs.</p>
