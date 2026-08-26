@@ -122,7 +122,7 @@ export async function submitTicket(payload, { fetchImpl = globalThis.fetch, time
 
 export function buildTicketWhatsAppUrl({ publicId, serviceName, equipmentType, description, urgency }) {
   const lines = [
-    `Olá! Acabei de registrar a Solicitação CKF ${clean(publicId)} pelo site.`,
+    `Olá! Acabei de registrar a Solicitação CKF #${clean(publicId)} pelo site.`,
     '',
     `Serviço: ${clean(serviceName) || 'Não informado'}`,
     `Equipamento: ${clean(equipmentType) || 'Não informado'}`,
