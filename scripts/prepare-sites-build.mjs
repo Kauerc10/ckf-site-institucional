@@ -23,9 +23,9 @@ if (new URL(siteUrl).protocol !== 'https:') throw new Error('SITE_URL must use H
 
 const builtHtml = readFileSync(index, 'utf8')
 if (!builtHtml.includes('__CKF_SITE_URL__')) throw new Error('Missing CKF site URL placeholder in built index.html')
-const stylesheetMatch = builtHtml.match(/<link rel="stylesheet"[^>]*href="([^"]+)"/)
-if (!stylesheetMatch) throw new Error('Missing Vite stylesheet in built index.html')
-const stylesheetHref = stylesheetMatch[1]
+const stylesheetHrefs = [...builtHtml.matchAll(/<link rel="stylesheet"[^>]*href="([^"]+)"/g)].map((match) => match[1])
+const stylesheetHref = stylesheetHrefs.find((href) => /^\/assets\/.*\.css$/.test(href))
+if (!stylesheetHref) throw new Error('Missing Vite bundle stylesheet in built index.html')
 
 function escapeHtml(value) {
   return String(value)
@@ -59,6 +59,7 @@ function baseHead({ title, description, canonical, image = '/assets/solda-ckf.we
     <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
     <link rel="stylesheet" href="${stylesheetHref}" />
     <link rel="stylesheet" href="/service-pages.css" />
+    <link rel="stylesheet" href="/mobile-a11y.css" />
     ${schemas}
     <title>${escapeHtml(title)}</title>`
 }
@@ -91,6 +92,31 @@ function breadcrumbs(items) {
   }
 }
 
+function renderTopbar({ ctaHref, ctaLabel = 'Solicitar orçamento', external = false }) {
+  const externalAttrs = external ? ' target="_blank" rel="noreferrer"' : ''
+  return `<header class="topbar">
+      <a class="brand" href="/" aria-label="CKF Manutenção - Início"><img src="/assets/logo-ckf.png" alt="CKF Manutenção" /></a>
+      <nav aria-label="Navegação principal"><a class="service-page__nav" href="/servicos">Serviços</a><a class="service-page__nav" href="/#sobre">Quem somos</a><a class="service-page__nav" href="/#localizacao">Localização</a><a class="service-page__nav" href="/#contato">Contato</a></nav>
+      <a class="button button--small" href="${escapeHtml(ctaHref)}"${externalAttrs}>${escapeHtml(ctaLabel)}</a>
+      <details class="mobile-menu">
+        <summary aria-label="Abrir menu de navegação">Menu</summary>
+        <nav aria-label="Navegação móvel">
+          <a href="/servicos">Serviços</a>
+          <a href="/#capacidade">Estrutura</a>
+          <a href="/#sobre">Quem somos</a>
+          <a href="/#processo">Como trabalhamos</a>
+          <a href="/#localizacao">Localização</a>
+          <a href="/#contato">Contato</a>
+          <a class="mobile-menu__cta" href="${escapeHtml(ctaHref)}"${externalAttrs}>${escapeHtml(ctaLabel)}</a>
+        </nav>
+      </details>
+    </header>`
+}
+
+function renderFooter({ whatsapp = buildWhatsAppUrl() } = {}) {
+  return `<footer><div class="footer__inner section-shell"><div><img src="/assets/logo-ckf.png" alt="CKF Manutenção" /><p>Manutenção pesada, recuperação e estruturas para operações que precisam continuar.</p></div><div><h3>WhatsApp rápido</h3><a href="${whatsapp}" target="_blank" rel="noreferrer">${CONTACTS.primary.label}</a><p>Para contato direto sem formulário.</p></div><div><h3>Unidade</h3><p>Rodovia BR-101, 6780<br />Galpão 01, Sala 01 · Espinheiros<br />Itajaí · SC · 88317-000</p></div></div></footer>`
+}
+
 function renderServicePage(page) {
   const canonical = `${siteUrl}${page.href}`
   const whatsapp = buildWhatsAppUrl({ service: page.ctaService })
@@ -119,31 +145,29 @@ function renderServicePage(page) {
   return `<!doctype html><html lang="pt-BR"><head>
     ${baseHead({ title: page.title, description: page.description, canonical, image: page.image, structuredData: [serviceSchema, breadcrumbSchema] })}
   </head><body class="service-page"><main>
-    <header class="topbar">
-      <a class="brand" href="/" aria-label="CKF Manutenção - Início"><img src="/assets/logo-ckf.png" alt="CKF Manutenção" /></a>
-      <nav aria-label="Navegação principal"><a class="service-page__nav" href="/servicos">Serviços</a><a class="service-page__nav" href="/#sobre">Quem somos</a><a class="service-page__nav" href="/#localizacao">Localização</a><a class="service-page__nav" href="/#contato">Contato</a></nav>
-      <a class="button button--small" href="${whatsapp}" target="_blank" rel="noreferrer">WhatsApp rápido</a>
-    </header>
+    ${renderTopbar({ ctaHref: whatsapp, ctaLabel: 'WhatsApp rápido', external: true })}
     <nav class="section-shell service-page__breadcrumb" aria-label="Navegação estrutural"><a href="/">Início</a><span>/</span><a href="/servicos">Serviços</a><span>/</span><span aria-current="page">${escapeHtml(page.cardTitle)}</span></nav>
     <section class="hero"><img src="${page.image}" alt="${escapeHtml(page.imageAlt)}" fetchpriority="high" /><div class="hero__content"><p class="eyebrow">${escapeHtml(page.eyebrow)}</p><h1>${escapeHtml(page.heading)}</h1><p>${escapeHtml(page.intro)}</p><a class="button" href="${escapeHtml(ticketHref)}">Solicitar orçamento</a></div></section>
     <section class="service-list" aria-labelledby="service-detail-title"><div class="section-shell service-list__layout"><div><p class="eyebrow">Atendimento em Itajaí</p><h2 id="service-detail-title">O que avaliamos no serviço.</h2><p>A intervenção é definida depois de entender o equipamento, o problema e a condição encontrada no diagnóstico.</p><p class="service-page__local">CKF Manutenção · Espinheiros · Itajaí/SC</p></div><div class="service-table-wrap service-page__table"><table><thead><tr><th scope="col">Frente de serviço</th><th scope="col">Como ajudamos</th></tr></thead><tbody>${servicesRows}</tbody></table></div></div></section>
     <section class="section-shell service-page__related" aria-labelledby="related-title"><p class="eyebrow">Continue explorando</p><h2 id="related-title">Serviços relacionados</h2><ul>${related}</ul></section>
-    <section class="contact"><div class="section-shell contact__wrap"><div><div><h2>Explique o cenário para a CKF.</h2><p>Registre equipamento, contato e urgência. A Solicitação recebe um Ticket antes de você continuar no WhatsApp.</p></div></div><a class="button" href="${escapeHtml(ticketHref)}">Registrar Solicitação</a></div></section>
-    <footer><div class="footer__inner section-shell"><div><img src="/assets/logo-ckf.png" alt="CKF Manutenção" /><p>Manutenção pesada, recuperação e estruturas para operações que precisam continuar.</p></div><div><h3>WhatsApp rápido</h3><a href="${whatsapp}" target="_blank" rel="noreferrer">${CONTACTS.primary.label}</a><p>Para contato direto sem formulário.</p></div><div><h3>Unidade</h3><p>Rodovia BR-101, 6780<br />Galpão 01, Sala 01 · Espinheiros<br />Itajaí · SC · 88317-000</p></div></div></footer>
+    <section class="contact"><div class="section-shell contact__wrap"><div><div><h2>Explique o cenário para a CKF.</h2><p>Registre equipamento, contato e urgência. Sua Solicitação é registrada antes de você continuar o atendimento pelo WhatsApp.</p></div></div><a class="button" href="${escapeHtml(ticketHref)}">Registrar Solicitação</a></div></section>
+    ${renderFooter({ whatsapp })}
   </main></body></html>`
 }
 
 function renderServicesHub() {
   const canonical = `${siteUrl}/servicos`
+  const ticketHref = '/?cta=services-hub'
   const cards = SERVICE_PAGES.map((page) => `<article class="service-page__hub-card"><p class="eyebrow">${escapeHtml(page.eyebrow)}</p><h2><a href="${page.href}">${escapeHtml(page.cardTitle)}</a></h2><p>${escapeHtml(page.description)}</p><a class="text-link" href="${page.href}">Ver serviço →</a></article>`).join('')
   const schema = breadcrumbs([{ name: 'Início', url: siteUrl }, { name: 'Serviços', url: canonical }])
-  return `<!doctype html><html lang="pt-BR"><head>${baseHead({title:'Serviços de manutenção pesada e industrial | CKF Manutenção',description:'Conheça os serviços da CKF para caminhões, máquinas pesadas, centrais de concreto, manutenção industrial, hidráulica, solda e estruturas em Itajaí.',canonical,structuredData:[schema]})}</head><body class="service-page"><main><header class="topbar"><a class="brand" href="/"><img src="/assets/logo-ckf.png" alt="CKF Manutenção" /></a><a class="button button--small" href="/?cta=services-hub">Pedir orçamento</a></header><section class="section-shell service-page__hub"><p class="eyebrow">CKF Manutenção</p><h1>Todos os serviços</h1><p>Encontre a frente mais próxima do seu cenário. Se ainda não souber qual serviço escolher, registre a Solicitação e descreva o problema.</p><div class="service-page__hub-grid">${cards}</div></section><section class="contact"><div class="section-shell contact__wrap"><div><div><h2>Não encontrou o nome exato do serviço?</h2><p>Conte o que está acontecendo com o equipamento. A equipe direciona o atendimento.</p></div></div><a class="button" href="/?cta=services-hub">Registrar Solicitação</a></div></section></main></body></html>`
+  return `<!doctype html><html lang="pt-BR"><head>${baseHead({title:'Serviços de manutenção pesada e industrial | CKF Manutenção',description:'Conheça os serviços da CKF para caminhões, máquinas pesadas, centrais de concreto, manutenção industrial, hidráulica, solda e estruturas em Itajaí.',canonical,structuredData:[schema]})}</head><body class="service-page"><main>${renderTopbar({ ctaHref: ticketHref, ctaLabel: 'Pedir orçamento' })}<section class="section-shell service-page__hub"><p class="eyebrow">CKF Manutenção</p><h1>Todos os serviços</h1><p>Encontre a frente mais próxima do seu cenário. Se ainda não souber qual serviço escolher, registre a Solicitação e descreva o problema.</p><div class="service-page__hub-grid">${cards}</div></section><section class="contact"><div class="section-shell contact__wrap"><div><div><h2>Não encontrou o nome exato do serviço?</h2><p>Conte o que está acontecendo com o equipamento. A equipe direciona o atendimento.</p></div></div><a class="button" href="${ticketHref}">Registrar Solicitação</a></div></section>${renderFooter()}</main></body></html>`
 }
 
 function renderPrivacyPage() {
   const canonical = `${siteUrl}/privacidade`
+  const ticketHref = '/?cta=privacy'
   const schema = breadcrumbs([{ name: 'Início', url: siteUrl }, { name: 'Política de Privacidade', url: canonical }])
-  return `<!doctype html><html lang="pt-BR"><head>${baseHead({title:'Política de Privacidade | CKF Manutenção',description:'Saiba como a CKF Manutenção utiliza os dados enviados pelo site para responder Solicitações, preparar atendimento e orçamento.',canonical,structuredData:[schema]})}</head><body class="service-page"><main><header class="topbar"><a class="brand" href="/"><img src="/assets/logo-ckf.png" alt="CKF Manutenção" /></a><a class="service-page__nav" href="/">Voltar ao site</a></header><article class="section-shell service-page__legal"><p class="eyebrow">Privacidade</p><h1>Política de Privacidade</h1><p>Esta política explica como a CKF Manutenção trata as informações enviadas pelo site quando você registra uma Solicitação ou entra em contato pelo WhatsApp.</p><h2>Quais dados podemos receber</h2><p>Nome, telefone, e-mail opcional, empresa opcional, cidade e UF, tipo de equipamento, marca e modelo opcionais, descrição do problema, urgência e informações técnicas de origem da visita, como página acessada e parâmetros de campanha.</p><h2>Para que usamos esses dados</h2><p>Usamos as informações para identificar sua Solicitação, responder ao contato, entender o serviço necessário, organizar o atendimento e preparar orçamento quando aplicável. Não exigimos consentimento de marketing para solicitar atendimento.</p><h2>WhatsApp e serviços de infraestrutura</h2><p>Ao continuar o atendimento pelo WhatsApp, a conversa também fica sujeita às práticas da plataforma utilizada. O site utiliza infraestrutura de hospedagem e banco de dados para registrar e proteger as Solicitações.</p><h2>Segurança e minimização</h2><p>Coletamos apenas dados úteis ao atendimento. O identificador de rede usado para proteção contra abuso é transformado em digest criptográfico antes de ser armazenado, e o site não recebe acesso direto às tabelas internas da CKF.</p><h2>Retenção e direitos</h2><p>As informações são mantidas pelo período necessário às finalidades de atendimento, orçamento, relacionamento comercial e obrigações aplicáveis. Você pode solicitar acesso, correção ou eliminação quando cabível entrando em contato com a CKF pelos canais informados no site.</p><h2>Contato</h2><p>Para dúvidas sobre privacidade ou sobre uma Solicitação, fale com a CKF Manutenção pelo WhatsApp disponível neste site.</p><p><small>Última atualização: 25 de agosto de 2026.</small></p></article></main></body></html>`
+  return `<!doctype html><html lang="pt-BR"><head>${baseHead({title:'Política de Privacidade | CKF Manutenção',description:'Saiba como a CKF Manutenção utiliza os dados enviados pelo site para responder Solicitações, preparar atendimento e orçamento.',canonical,structuredData:[schema]})}</head><body class="service-page"><main>${renderTopbar({ ctaHref: ticketHref, ctaLabel: 'Solicitar orçamento' })}<article class="section-shell service-page__legal"><p class="eyebrow">Privacidade</p><h1>Política de Privacidade</h1><p>Esta política explica como a CKF Manutenção trata as informações enviadas pelo site quando você registra uma Solicitação ou entra em contato pelo WhatsApp.</p><h2>Quais dados podemos receber</h2><p>Nome, telefone, e-mail opcional, empresa opcional, cidade e UF, tipo de equipamento, marca e modelo opcionais, descrição do problema, urgência e informações técnicas de origem da visita, como página acessada e parâmetros de campanha.</p><h2>Para que usamos esses dados</h2><p>Usamos as informações para identificar sua Solicitação, responder ao contato, entender o serviço necessário, organizar o atendimento e preparar orçamento quando aplicável. Não exigimos consentimento de marketing para solicitar atendimento.</p><h2>WhatsApp e serviços de infraestrutura</h2><p>Ao continuar o atendimento pelo WhatsApp, a conversa também fica sujeita às práticas da plataforma utilizada. O site utiliza infraestrutura de hospedagem e banco de dados para registrar e proteger as Solicitações.</p><h2>Segurança e minimização</h2><p>Coletamos apenas dados úteis ao atendimento. O identificador de rede usado para proteção contra abuso é transformado em digest criptográfico antes de ser armazenado, e o site não recebe acesso direto às tabelas internas da CKF.</p><h2>Retenção e direitos</h2><p>As informações são mantidas pelo período necessário às finalidades de atendimento, orçamento, relacionamento comercial e obrigações aplicáveis. Você pode solicitar acesso, correção ou eliminação quando cabível entrando em contato com a CKF pelos canais informados no site.</p><h2>Contato</h2><p>Para dúvidas sobre privacidade ou sobre uma Solicitação, fale com a CKF Manutenção pelo WhatsApp disponível neste site.</p><p><small>Última atualização: 25 de agosto de 2026.</small></p></article>${renderFooter()}</main></body></html>`
 }
 
 const publicIndexHtml = builtHtml.replaceAll('__CKF_SITE_URL__', siteUrl)

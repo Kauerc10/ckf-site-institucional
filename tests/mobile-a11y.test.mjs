@@ -14,7 +14,7 @@ test('home oferece navegação móvel sem remover a navegação do teclado', () 
   const app = read('src/App.jsx')
 
   assert.match(app, /className="skip-link"/)
-  assert.match(app, /<details className="mobile-menu">/)
+  assert.match(app, /<details className="mobile-menu"[^>]*>/)
   assert.match(app, /<summary[^>]*>Menu<\/summary>/)
 })
 

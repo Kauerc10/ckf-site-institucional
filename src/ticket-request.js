@@ -11,22 +11,55 @@ export function createIdempotencyKey() {
     return crypto.randomUUID()
   }
 
+  if (typeof crypto === 'undefined' || typeof crypto.getRandomValues !== 'function') {
+    throw new Error('Gerador seguro de identificadores indisponível.')
+  }
+
   const bytes = new Uint8Array(16)
   crypto.getRandomValues(bytes)
   return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('')
 }
 
+export function readTicketLaunchIntent({ search = globalThis.location?.search ?? '', knownServiceSlugs = [] } = {}) {
+  const params = new URLSearchParams(search)
+  const requestedSlug = clean(params.get('orcamento'))
+  const source = clean(params.get('cta'))
+  const serviceSlug = requestedSlug && knownServiceSlugs.includes(requestedSlug) ? requestedSlug : ''
+  const shouldOpen = Boolean(serviceSlug || (!requestedSlug && source))
+
+  return {
+    shouldOpen,
+    source: source || (serviceSlug ? 'service-page' : 'unknown'),
+    serviceSlug,
+  }
+}
+
 export function readTicketAttribution({ location = globalThis.location, document = globalThis.document, ctaSource = 'unknown' } = {}) {
   const params = new URLSearchParams(location?.search ?? '')
+  const rawReferrer = clean(document?.referrer)
+  let referrerParams = null
+
+  if (rawReferrer) {
+    try {
+      const referrerUrl = new URL(rawReferrer, location?.origin || undefined)
+      const currentOrigin = clean(location?.origin)
+      if (!currentOrigin || referrerUrl.origin === currentOrigin) referrerParams = referrerUrl.searchParams
+    } catch {
+      referrerParams = null
+    }
+  }
+
+  const attributionValue = (key, maxLength) => clean(params.get(key) || referrerParams?.get(key)).slice(0, maxLength)
+
   return {
     landingPath: `${location?.pathname ?? '/'}${location?.search ?? ''}`.slice(0, 500),
     ctaSource: clean(ctaSource).slice(0, 120),
-    referrer: clean(document?.referrer).slice(0, 1000),
-    utmSource: clean(params.get('utm_source')).slice(0, 200),
-    utmMedium: clean(params.get('utm_medium')).slice(0, 200),
-    utmCampaign: clean(params.get('utm_campaign')).slice(0, 300),
-    utmTerm: clean(params.get('utm_term')).slice(0, 300),
-    utmContent: clean(params.get('utm_content')).slice(0, 300),
+    referrer: rawReferrer.slice(0, 1000),
+    utmSource: attributionValue('utm_source', 200),
+    utmMedium: attributionValue('utm_medium', 200),
+    utmCampaign: attributionValue('utm_campaign', 300),
+    utmTerm: attributionValue('utm_term', 300),
+    utmContent: attributionValue('utm_content', 300),
   }
 }
 
@@ -89,7 +122,7 @@ export async function submitTicket(payload, { fetchImpl = globalThis.fetch, time
 
 export function buildTicketWhatsAppUrl({ publicId, serviceName, equipmentType, description, urgency }) {
   const lines = [
-    `Olá! Acabei de registrar a Solicitação CKF ${clean(publicId)} pelo site.`,
+    `Olá! Acabei de registrar a Solicitação CKF #${clean(publicId)} pelo site.`,
     '',
     `Serviço: ${clean(serviceName) || 'Não informado'}`,
     `Equipamento: ${clean(equipmentType) || 'Não informado'}`,

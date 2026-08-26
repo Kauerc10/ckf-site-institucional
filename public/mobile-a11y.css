@@ -64,9 +64,14 @@
   outline-offset:4px;
 }
 
-@media (max-width:800px) {
+@media (max-width:1024px) {
+  .topbar > nav { display:none; }
   .mobile-menu { display:block; }
   .mobile-menu nav { display:flex !important; flex-direction:column; gap:0; }
+}
+
+@media (max-width:800px) {
+  .service-table-wrap td a { width:44px; height:44px; }
 }
 
 @media (max-width:480px) {
