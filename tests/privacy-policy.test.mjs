@@ -6,6 +6,8 @@ import { fileURLToPath } from 'node:url'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const dialog = readFileSync(path.join(root, 'src', 'TicketRequestDialog.jsx'), 'utf8')
+const app = readFileSync(path.join(root, 'src', 'App.jsx'), 'utf8')
+const staticBuild = readFileSync(path.join(root, 'scripts', 'prepare-sites-build.mjs'), 'utf8')
 const privacyHtml = readFileSync(path.join(root, 'dist', 'client', 'privacidade', 'index.html'), 'utf8')
 const marketingPath = path.join(root, 'dist', 'client', 'marketing', 'index.html')
 const sitemap = readFileSync(path.join(root, 'dist', 'client', 'sitemap.xml'), 'utf8')
@@ -14,6 +16,16 @@ test('formulário informa ciência das duas políticas antes do envio', () => {
   assert.match(dialog, /Ao prosseguir, você declara ter lido e estar ciente da nossa/i)
   assert.match(dialog, /href="\/privacidade"[^>]*>Política de Privacidade<\/a>/)
   assert.match(dialog, /href="\/marketing"[^>]*>Política de Comunicações e Marketing<\/a>/)
+})
+
+test('rodapé público identifica a CKF e oferece acesso permanente às políticas', () => {
+  for (const source of [app, staticBuild]) {
+    assert.match(source, /\/privacidade/)
+    assert.match(source, /\/marketing/)
+    assert.match(source, /CKF MANUTENCAO LTDA/)
+    assert.match(source, /57\.461\.028\/0001-43/)
+    assert.match(source, /Idealizado e desenvolvido por K-Hub/i)
+  }
 })
 
 test('Política de Privacidade cobre os pontos essenciais da jornada de Solicitação', () => {
@@ -37,6 +49,9 @@ test('Política de Privacidade cobre os pontos essenciais da jornada de Solicita
   assert.match(privacyHtml, /parâmetros de campanha/i)
   assert.match(privacyHtml, /não vendemos/i)
   assert.match(privacyHtml, /\/marketing/)
+  assert.match(privacyHtml, /CKF MANUTENCAO LTDA/)
+  assert.match(privacyHtml, /57\.461\.028\/0001-43/)
+  assert.match(privacyHtml, /Rodovia BR-101, 6780/i)
 })
 
 test('Política de Comunicações e Marketing é publicada com escopo e saída claros', () => {
@@ -64,6 +79,8 @@ test('Política de Comunicações e Marketing é publicada com escopo e saída c
   assert.match(marketingHtml, /consentimento/i)
   assert.match(marketingHtml, /SAIR/i)
   assert.match(marketingHtml, /não vendemos/i)
+  assert.match(marketingHtml, /CKF MANUTENCAO LTDA/)
+  assert.match(marketingHtml, /57\.461\.028\/0001-43/)
 })
 
 test('sitemap publica a política de marketing junto das páginas legais', () => {
