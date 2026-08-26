@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/prepare-sites-build.mjs && node scripts/enhance-static-accessibility.mjs && node scripts/enhance-static-privacy.mjs && node scripts/enhance-static-marketing.mjs",
+    "build": "vite build && node scripts/prepare-sites-build.mjs && node scripts/enhance-static-accessibility.mjs && node scripts/enhance-static-privacy.mjs && node scripts/enhance-static-marketing.mjs && node scripts/enhance-static-legal-shell.mjs",
     "preview": "vite preview",
     "test:unit": "node --test tests/whatsapp-links.test.mjs tests/seo-output.test.mjs tests/service-pages.test.mjs tests/mobile-a11y.test.mjs tests/assets-budget.test.mjs tests/dependency-security.test.mjs tests/trust-asset.test.mjs tests/service-internal-links.test.mjs tests/service-catalog.test.mjs tests/ticket-request.test.mjs tests/seo-industrial-launch.test.mjs tests/analytics.test.mjs tests/conversion-ux.test.mjs tests/privacy-policy.test.mjs",
     "test:sites": "node --test tests/sites-worker.test.mjs",
