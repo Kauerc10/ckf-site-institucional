@@ -8,7 +8,9 @@ import { readTicketAttribution } from '../src/ticket-request.js'
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const app = readFileSync(path.join(root, 'src', 'App.jsx'), 'utf8')
 const dialog = readFileSync(path.join(root, 'src', 'TicketRequestDialog.jsx'), 'utf8')
+const ticketCss = readFileSync(path.join(root, 'src', 'ticket-request.css'), 'utf8')
 const mobileCss = readFileSync(path.join(root, 'public', 'mobile-a11y.css'), 'utf8')
+const serviceHtml = readFileSync(path.join(root, 'dist', 'client', 'servicos', 'reforma-chassis', 'index.html'), 'utf8')
 const vercel = JSON.parse(readFileSync(path.join(root, 'vercel.json'), 'utf8'))
 
 const SUPABASE_ORIGIN = 'https://xsvvdhznrdkygmvganwb.supabase.co'
@@ -77,4 +79,30 @@ test('atalhos de serviço respeitam alvo mínimo de toque no mobile', () => {
 test('WhatsApp direto é nomeado como atalho, não como formulário de orçamento', () => {
   assert.match(app, /data-cta-source="header"[^>]*>[\s\S]*?WhatsApp rápido<\/a>/)
   assert.match(app, /data-cta-source="mobile-menu"[^>]*>[\s\S]*?WhatsApp rápido<\/a>/)
+})
+
+test('CTAs que abrem formulário não prometem abrir WhatsApp imediatamente', () => {
+  assert.doesNotMatch(app, /data-ticket-trigger="hero"[^>]*>[\s\S]*?<FaWhatsapp[^>]*\/>/)
+  assert.doesNotMatch(app, /data-ticket-trigger="contact"[^>]*>[\s\S]*?<FaWhatsapp[^>]*\/>/)
+})
+
+test('menu móvel fecha depois de navegar para uma seção', () => {
+  assert.match(app, /const detailsRef = useRef\(null\)/)
+  assert.match(app, /onClick=\{closeMenu\}/)
+})
+
+test('progresso do formulário continua compreensível no celular', () => {
+  assert.doesNotMatch(ticketCss, /\.ticket-progress li\s*\{\s*font-size:\s*0;/)
+})
+
+test('formulário usa viewport dinâmica e geometria industrial da CKF', () => {
+  assert.match(ticketCss, /max-height:\s*min\(860px,\s*calc\(100dvh - 32px\)\)/)
+  assert.match(ticketCss, /\.ticket-dialog\s*\{[^}]*border-radius:\s*2px;/s)
+  assert.match(ticketCss, /\.ticket-form input,[\s\S]*?border-radius:\s*2px;/)
+  assert.match(ticketCss, /\.ticket-progress li\.is-active span\s*\{[^}]*var\(--yellow\)/s)
+})
+
+test('página pública não expõe o jargão interno Ticket', () => {
+  assert.doesNotMatch(serviceHtml, /\bTicket\b/i)
+  assert.match(serviceHtml, /Solicitação/)
 })
