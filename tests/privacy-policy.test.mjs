@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url'
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const dialog = readFileSync(path.join(root, 'src', 'TicketRequestDialog.jsx'), 'utf8')
 const app = readFileSync(path.join(root, 'src', 'App.jsx'), 'utf8')
+const home = readFileSync(path.join(root, 'index.html'), 'utf8')
 const staticBuild = readFileSync(path.join(root, 'scripts', 'prepare-sites-build.mjs'), 'utf8')
 const privacyHtml = readFileSync(path.join(root, 'dist', 'client', 'privacidade', 'index.html'), 'utf8')
 const marketingPath = path.join(root, 'dist', 'client', 'marketing', 'index.html')
@@ -26,6 +27,11 @@ test('rodapé público identifica a CKF e oferece acesso permanente às polític
     assert.match(source, /57\.461\.028\/0001-43/)
     assert.match(source, /Idealizado e desenvolvido por K-Hub/i)
   }
+})
+
+test('schema da home preserva razão social e CNPJ oficiais', () => {
+  assert.match(home, /"legalName":"CKF MANUTENCAO LTDA"/)
+  assert.match(home, /"taxID":"57\.461\.028\/0001-43"/)
 })
 
 test('Política de Privacidade cobre os pontos essenciais da jornada de Solicitação', () => {
