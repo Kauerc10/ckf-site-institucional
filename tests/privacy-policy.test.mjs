@@ -12,6 +12,7 @@ const legalFooterCss = readFileSync(path.join(root, 'src', 'legal-footer.css'), 
 const staticLegalEnhancer = readFileSync(path.join(root, 'scripts', 'enhance-static-legal-shell.mjs'), 'utf8')
 const privacyHtml = readFileSync(path.join(root, 'dist', 'client', 'privacidade', 'index.html'), 'utf8')
 const marketingPath = path.join(root, 'dist', 'client', 'marketing', 'index.html')
+const serviceHtml = readFileSync(path.join(root, 'dist', 'client', 'servicos', 'reforma-chassis', 'index.html'), 'utf8')
 const sitemap = readFileSync(path.join(root, 'dist', 'client', 'sitemap.xml'), 'utf8')
 
 test('formulário informa ciência das duas políticas antes do envio', () => {
@@ -37,8 +38,11 @@ test('divisor jurídico ocupa toda a largura do rodapé', () => {
 test('botão principal usa apenas WhatsApp, sem o sufixo rápido', () => {
   assert.match(app, />\s*WhatsApp\s*<\/a>/)
   assert.doesNotMatch(app, /WhatsApp rápido<\/a>/)
-  assert.match(staticLegalEnhancer, />WhatsApp<\/a>/)
-  assert.doesNotMatch(staticLegalEnhancer, />WhatsApp rápido<\/a>/)
+
+  for (const html of [privacyHtml, readFileSync(marketingPath, 'utf8'), serviceHtml]) {
+    assert.match(html, />WhatsApp<\/a>/)
+    assert.doesNotMatch(html, />WhatsApp rápido<\/a>/)
+  }
 })
 
 test('páginas de políticas usam a mesma navegação superior da home', () => {
