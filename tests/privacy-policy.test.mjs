@@ -8,7 +8,8 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const dialog = readFileSync(path.join(root, 'src', 'TicketRequestDialog.jsx'), 'utf8')
 const app = readFileSync(path.join(root, 'src', 'App.jsx'), 'utf8')
 const home = readFileSync(path.join(root, 'index.html'), 'utf8')
-const staticBuild = readFileSync(path.join(root, 'scripts', 'prepare-sites-build.mjs'), 'utf8')
+const legalFooterCss = readFileSync(path.join(root, 'src', 'legal-footer.css'), 'utf8')
+const staticLegalEnhancer = readFileSync(path.join(root, 'scripts', 'enhance-static-legal-shell.mjs'), 'utf8')
 const privacyHtml = readFileSync(path.join(root, 'dist', 'client', 'privacidade', 'index.html'), 'utf8')
 const marketingPath = path.join(root, 'dist', 'client', 'marketing', 'index.html')
 const sitemap = readFileSync(path.join(root, 'dist', 'client', 'sitemap.xml'), 'utf8')
@@ -20,12 +21,33 @@ test('formulário informa ciência das duas políticas antes do envio', () => {
 })
 
 test('rodapé público identifica a CKF e oferece acesso permanente às políticas', () => {
-  for (const source of [app, staticBuild]) {
+  for (const source of [app, staticLegalEnhancer]) {
     assert.match(source, /\/privacidade/)
     assert.match(source, /\/marketing/)
     assert.match(source, /CKF MANUTENCAO LTDA/)
     assert.match(source, /57\.461\.028\/0001-43/)
-    assert.match(source, /Idealizado e desenvolvido por[\s\S]*?K-Hub/i)
+    assert.match(source, /Idealizado e desenvolvido por[\s\S]*K-Hub/i)
+  }
+})
+
+test('divisor jurídico ocupa toda a largura do rodapé', () => {
+  assert.match(legalFooterCss, /\.footer__legal::before[\s\S]*left:\s*50%;[\s\S]*width:\s*100vw;[\s\S]*transform:\s*translateX\(-50%\)/)
+})
+
+test('botão principal usa apenas WhatsApp, sem o sufixo rápido', () => {
+  assert.match(app, />\s*WhatsApp\s*<\/a>/)
+  assert.doesNotMatch(app, /WhatsApp rápido<\/a>/)
+  assert.match(staticLegalEnhancer, />WhatsApp<\/a>/)
+  assert.doesNotMatch(staticLegalEnhancer, />WhatsApp rápido<\/a>/)
+})
+
+test('páginas de políticas usam a mesma navegação superior da home', () => {
+  for (const html of [privacyHtml, readFileSync(marketingPath, 'utf8')]) {
+    for (const label of ['Serviços', 'Estrutura', 'Quem somos', 'Como trabalhamos', 'Localização', 'Contato']) {
+      assert.match(html, new RegExp(`>${label}<`, 'i'))
+    }
+    assert.match(html, />WhatsApp<\/a>/i)
+    assert.doesNotMatch(html, />Solicitar orçamento<\/a>/i)
   }
 })
 
