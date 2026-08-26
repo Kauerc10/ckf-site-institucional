@@ -1,11 +1,23 @@
 .footer__legal {
+  position:relative;
   display:grid;
   grid-template-columns:minmax(0,1.6fr) minmax(260px,1fr);
   gap:10px 34px;
   align-items:end;
   margin-top:30px;
   padding-top:20px;
-  border-top:1px solid rgba(247,247,244,.12);
+}
+
+.footer__legal::before {
+  content:'';
+  position:absolute;
+  top:0;
+  left:50%;
+  width:100vw;
+  height:1px;
+  transform:translateX(-50%);
+  background:rgba(247,247,244,.12);
+  pointer-events:none;
 }
 
 .footer__policies {
