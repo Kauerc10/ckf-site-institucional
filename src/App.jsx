@@ -7,11 +7,13 @@ import './styles.css'
 import { SERVICE_PAGES } from '../service-pages.mjs'
 import { trackEvent } from './analytics.js'
 import { TicketRequestDialog } from './TicketRequestDialog.jsx'
+import { readTicketLaunchIntent } from './ticket-request.js'
 import { CONTACTS, buildWhatsAppUrl } from './whatsapp.js'
 
 const WHATSAPP = buildWhatsAppUrl()
 const MAPS = 'https://www.google.com/maps/search/?api=1&query=Rodovia%20BR-101%2C%206780%2C%20Galp%C3%A3o%2001%20Sala%2001%2C%20Espinheiros%2C%20Itaja%C3%AD%20-%20SC%2C%2088317-000'
 const serviceHighlights = SERVICE_PAGES.filter((service) => service.featured)
+const serviceSlugs = SERVICE_PAGES.map((service) => service.slug)
 const pagePath = () => globalThis.location?.pathname || '/'
 const trackWhatsApp = (ctaSource, serviceSlug = '') => trackEvent('whatsapp_click', { page: pagePath(), ctaSource, serviceSlug })
 
@@ -32,7 +34,7 @@ const audiences = [[FaTruck,'Gestores de frota'],[FaIndustry,'Centrais de concre
 const process = [[FaComments,'01','Entendimento rápido','Você nos conta o problema. Perguntamos o essencial para entender o cenário.'],[FaMagnifyingGlass,'02','Diagnóstico e plano','Avaliamos, explicamos as opções e deixamos o orçamento claro.'],[FaScrewdriverWrench,'03','Execução e entrega','Mão de obra especializada e teste final para a operação voltar com segurança.']]
 
 function MobileMenu() {
-  return <details className="mobile-menu"><summary aria-label="Abrir menu de navegação">Menu</summary><nav aria-label="Navegação móvel"><a href="#servicos">Serviços</a><a href="#capacidade">Estrutura</a><a href="#sobre">Quem somos</a><a href="#processo">Como trabalhamos</a><a href="#localizacao">Localização</a><a href="#contato">Contato</a><a className="mobile-menu__cta" href={WHATSAPP} target="_blank" rel="noreferrer" data-cta-source="mobile-menu" onClick={() => trackWhatsApp('mobile-menu')}>Pedir orçamento</a></nav></details>
+  return <details className="mobile-menu"><summary aria-label="Abrir menu de navegação">Menu</summary><nav aria-label="Navegação móvel"><a href="#servicos">Serviços</a><a href="#capacidade">Estrutura</a><a href="#sobre">Quem somos</a><a href="#processo">Como trabalhamos</a><a href="#localizacao">Localização</a><a href="#contato">Contato</a><a className="mobile-menu__cta" href={WHATSAPP} target="_blank" rel="noreferrer" data-cta-source="mobile-menu" onClick={() => trackWhatsApp('mobile-menu')}>WhatsApp rápido</a></nav></details>
 }
 
 export function App() {
@@ -40,14 +42,16 @@ export function App() {
   function openTicket(source, serviceSlug = '') { setTicketDialog({ open:true, source, serviceSlug }) }
 
   useEffect(() => {
-    const params = new URLSearchParams(globalThis.location?.search ?? '')
-    const requestedSlug = params.get('orcamento') ?? ''
-    if (requestedSlug && SERVICE_PAGES.some((service) => service.slug === requestedSlug)) openTicket(params.get('cta') || 'service-page', requestedSlug)
+    const intent = readTicketLaunchIntent({
+      search: globalThis.location?.search ?? '',
+      knownServiceSlugs: serviceSlugs,
+    })
+    if (intent.shouldOpen) openTicket(intent.source, intent.serviceSlug)
   }, [])
 
   return <main>
     <a className="skip-link" href="#inicio">Pular para o conteúdo</a>
-    <header className="topbar"><a className="brand" href="#inicio" aria-label="CKF Manutenção - Início"><img src="/assets/logo-ckf.png" alt="CKF Manutenção" /></a><nav className="desktop-nav" aria-label="Navegação principal"><a href="#servicos">Serviços</a><a href="#capacidade">Estrutura</a><a href="#sobre">Quem somos</a><a href="#processo">Como trabalhamos</a><a href="#localizacao">Localização</a><a href="#contato">Contato</a></nav><a className="button button--small" href={WHATSAPP} target="_blank" rel="noreferrer" data-cta-source="header" onClick={() => trackWhatsApp('header')}><FaWhatsapp /> Pedir orçamento</a><MobileMenu /></header>
+    <header className="topbar"><a className="brand" href="#inicio" aria-label="CKF Manutenção - Início"><img src="/assets/logo-ckf.png" alt="CKF Manutenção" /></a><nav className="desktop-nav" aria-label="Navegação principal"><a href="#servicos">Serviços</a><a href="#capacidade">Estrutura</a><a href="#sobre">Quem somos</a><a href="#processo">Como trabalhamos</a><a href="#localizacao">Localização</a><a href="#contato">Contato</a></nav><a className="button button--small" href={WHATSAPP} target="_blank" rel="noreferrer" data-cta-source="header" onClick={() => trackWhatsApp('header')}><FaWhatsapp /> WhatsApp rápido</a><MobileMenu /></header>
 
     <section className="hero" id="inicio"><img src="/assets/solda-ckf.webp" alt="Profissional da CKF realizando solda em chassi de caminhão" fetchPriority="high" /><span className="hero__weld-glow" aria-hidden="true" /><div className="hero__content"><p className="eyebrow">CKF Manutenção</p><h1>Sua operação<br />precisa continuar.</h1><p>Manutenção pesada para quem mede resultado em operação, prazo e segurança.</p><button className="button" type="button" data-ticket-trigger="hero" onClick={() => openTicket('hero')}><FaWhatsapp /> Solicitar orçamento</button></div></section>
     <section className="audience" aria-labelledby="audience-title"><div className="section-shell"><h2 id="audience-title">Quem confia, não para.</h2><div className="audience__items">{audiences.map(([Icon,label]) => <div className="audience__item" key={label}><Icon aria-hidden="true" /><span>{label}</span></div>)}</div></div></section>
