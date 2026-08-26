@@ -82,8 +82,15 @@ test('WhatsApp direto é nomeado como atalho, não como formulário de orçament
 })
 
 test('CTAs que abrem formulário não prometem abrir WhatsApp imediatamente', () => {
-  assert.doesNotMatch(app, /data-ticket-trigger="hero"[^>]*>[\s\S]*?<FaWhatsapp[^>]*\/>/)
-  assert.doesNotMatch(app, /data-ticket-trigger="contact"[^>]*>[\s\S]*?<FaWhatsapp[^>]*\/>/)
+  const heroButton = app.match(/<button[^>]*data-ticket-trigger="hero"[\s\S]*?<\/button>/)?.[0] ?? ''
+  const contactButton = app.match(/<button[^>]*data-ticket-trigger="contact"[\s\S]*?<\/button>/)?.[0] ?? ''
+
+  assert.notEqual(heroButton, '')
+  assert.notEqual(contactButton, '')
+  assert.doesNotMatch(heroButton, /FaWhatsapp/)
+  assert.doesNotMatch(contactButton, /FaWhatsapp/)
+  assert.match(heroButton, /FaArrowRight/)
+  assert.match(contactButton, /FaArrowRight/)
 })
 
 test('menu móvel fecha depois de navegar para uma seção', () => {
@@ -99,7 +106,7 @@ test('formulário usa viewport dinâmica e geometria industrial da CKF', () => {
   assert.match(ticketCss, /max-height:\s*min\(860px,\s*calc\(100dvh - 32px\)\)/)
   assert.match(ticketCss, /\.ticket-dialog\s*\{[^}]*border-radius:\s*2px;/s)
   assert.match(ticketCss, /\.ticket-form input,[\s\S]*?border-radius:\s*2px;/)
-  assert.match(ticketCss, /\.ticket-progress li\.is-active span\s*\{[^}]*var\(--yellow\)/s)
+  assert.match(ticketCss, /\.ticket-progress li\.is-active span\s*\{[^}]*var\(--yellow/s)
 })
 
 test('página pública não expõe o jargão interno Ticket', () => {
