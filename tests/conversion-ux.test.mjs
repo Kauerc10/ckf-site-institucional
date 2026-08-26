@@ -77,8 +77,9 @@ test('atalhos de serviço respeitam alvo mínimo de toque no mobile', () => {
 })
 
 test('WhatsApp direto é nomeado como atalho, não como formulário de orçamento', () => {
-  assert.match(app, /data-cta-source="header"[^>]*>[\s\S]*?WhatsApp rápido<\/a>/)
-  assert.match(app, /data-cta-source="mobile-menu"[^>]*>[\s\S]*?WhatsApp rápido<\/a>/)
+  assert.match(app, /data-cta-source="header"[^>]*>[\s\S]*?WhatsApp<\/a>/)
+  assert.match(app, /data-cta-source="mobile-menu"[^>]*>[\s\S]*?WhatsApp<\/a>/)
+  assert.doesNotMatch(app, /data-cta-source="(?:header|mobile-menu)"[^>]*>[\s\S]*?WhatsApp rápido<\/a>/)
 })
 
 test('CTAs que abrem formulário não prometem abrir WhatsApp imediatamente', () => {
