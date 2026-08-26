@@ -4,6 +4,7 @@ import {
   FaMagnifyingGlass, FaScrewdriverWrench, FaTruck, FaWhatsapp, FaWrench,
 } from 'react-icons/fa6'
 import './styles.css'
+import './legal-footer.css'
 import { SERVICE_PAGES } from '../service-pages.mjs'
 import { trackEvent } from './analytics.js'
 import { TicketRequestDialog } from './TicketRequestDialog.jsx'
@@ -68,7 +69,14 @@ export function App() {
     <section className="trust"><div className="trust__layout"><div className="trust__copy"><p className="eyebrow">Trabalho que sustenta</p><h2>Gente que resolve.<br />Do jeito certo.</h2><p>Equipe especializada, trabalho de verdade e foco total no que importa: sua operação funcionando com segurança.</p></div><figure className="trust__media"><img src="/assets/equipe-ckf-editorial.webp" alt="Equipe da CKF Manutenção reunida em frente a caminhão betoneira" loading="lazy" /></figure></div></section>
     <section className="location" id="localizacao"><div className="section-shell location__card"><img src="/assets/real/fachada-real.webp" alt="Fachada da unidade da CKF Manutenção" loading="lazy" /><div className="location__copy"><p className="eyebrow">Nossa unidade</p><h2>Venha conversar com a equipe.</h2><address><FaLocationDot aria-hidden="true" /><span>Rodovia BR-101, 6780<br />Galpão 01, Sala 01 · Espinheiros<br />Itajaí · SC · 88317-000</span></address><a className="button" href={MAPS} target="_blank" rel="noreferrer"><FaMapLocationDot /> Abrir rota no Maps</a></div></div></section>
     <section className="contact" id="contato"><div className="section-shell contact__wrap"><div><FaWhatsapp className="contact__icon" aria-hidden="true" /><div><h2>Sua operação não pode esperar.</h2><p>Registre o cenário em poucos passos e continue o atendimento com a equipe pelo WhatsApp.</p></div></div><button className="button" type="button" data-ticket-trigger="contact" onClick={() => openTicket('contact')}>Pedir orçamento <FaArrowRight aria-hidden="true" /></button></div></section>
-    <footer><div className="footer__inner section-shell"><div><img src="/assets/logo-ckf.png" alt="CKF Manutenção" /><p>Soluções em manutenção geral para caminhões, máquinas, concreto, equipamentos e estruturas.</p></div><div><h3>Fale com a gente</h3><a href={buildWhatsAppUrl()} target="_blank" rel="noreferrer" data-cta-source="footer-primary" data-contact="primary" onClick={() => trackWhatsApp('footer-primary')}><FaWhatsapp /> {CONTACTS.primary.label}</a><a href={buildWhatsAppUrl({contact:'secondary'})} target="_blank" rel="noreferrer" data-cta-source="footer-secondary" data-contact="secondary" onClick={() => trackWhatsApp('footer-secondary')}><FaWhatsapp /> {CONTACTS.secondary.label}</a><p>Atendimento rápido pelo WhatsApp.</p></div><div><h3>Manutenção geral</h3><p>Suspensão · Solda · Preventiva · Freios<br />Hidráulica · Reforma · Pintura · Embreagem</p></div></div></footer>
+    <footer>
+      <div className="footer__inner section-shell"><div><img src="/assets/logo-ckf.png" alt="CKF Manutenção" /><p>Soluções em manutenção geral para caminhões, máquinas, concreto, equipamentos e estruturas.</p></div><div><h3>Fale com a gente</h3><a href={buildWhatsAppUrl()} target="_blank" rel="noreferrer" data-cta-source="footer-primary" data-contact="primary" onClick={() => trackWhatsApp('footer-primary')}><FaWhatsapp /> {CONTACTS.primary.label}</a><a href={buildWhatsAppUrl({contact:'secondary'})} target="_blank" rel="noreferrer" data-cta-source="footer-secondary" data-contact="secondary" onClick={() => trackWhatsApp('footer-secondary')}><FaWhatsapp /> {CONTACTS.secondary.label}</a><p>Atendimento rápido pelo WhatsApp.</p></div><div><h3>Manutenção geral</h3><p>Suspensão · Solda · Preventiva · Freios<br />Hidráulica · Reforma · Pintura · Embreagem</p></div></div>
+      <div className="footer__legal section-shell">
+        <nav className="footer__policies" aria-label="Políticas e informações jurídicas"><a href="/privacidade">Política de Privacidade</a><span aria-hidden="true">·</span><a href="/marketing">Política de Comunicações e Marketing</a></nav>
+        <p className="footer__company">CKF MANUTENCAO LTDA · CNPJ 57.461.028/0001-43 · Rodovia BR-101, 6780, Galpão 01, Sala 01 · Espinheiros · Itajaí/SC · 88317-000</p>
+        <p className="footer__credit">Idealizado e desenvolvido por <strong>K-Hub</strong></p>
+      </div>
+    </footer>
     <TicketRequestDialog open={ticketDialog.open} source={ticketDialog.source} initialServiceSlug={ticketDialog.serviceSlug} onClose={() => setTicketDialog({open:false,source:'',serviceSlug:''})} />
   </main>
 }
