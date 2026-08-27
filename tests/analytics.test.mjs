@@ -141,6 +141,16 @@ test('Google Analytics 4 exige consentimento explícito antes de carregar a tag'
   assert.doesNotMatch(initSource, /phone|email|contactName|description/)
 })
 
+test('revogar medição encerra a tag ativa na navegação atual', () => {
+  const initSource = readFileSync(path.join(root, 'public', 'analytics-init.js'), 'utf8')
+  assert.match(initSource, /if \(googleTagLoaded\)[\s\S]*window\.location\.reload\(\)/)
+})
+
+test('primeira exibição do diálogo move foco para uma ação', () => {
+  const initSource = readFileSync(path.join(root, 'public', 'analytics-init.js'), 'utf8')
+  assert.match(initSource, /if \(consentChoice === null\) showPreferences\(\{ focusAction: true \}\)/)
+})
+
 test('bundle de consentimento é publicado uma vez em todas as páginas', () => {
   const consentCssPath = path.join(root, 'public', 'analytics-consent.css')
   assert.ok(existsSync(consentCssPath), 'faltou o CSS do controle de consentimento')
