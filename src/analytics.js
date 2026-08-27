@@ -29,8 +29,10 @@ export function trackEvent(name, properties = {}) {
   }
 
   try {
-    if (Array.isArray(target.dataLayer)) target.dataLayer.push({ event: name, ...data })
+    if (typeof target.ckfGoogleAnalytics?.track === 'function') {
+      target.ckfGoogleAnalytics.track(name, data)
+    }
   } catch {
-    // Provider opcional.
+    // Provider opcional e condicionado à preferência do visitante.
   }
 }

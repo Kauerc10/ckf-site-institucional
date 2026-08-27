@@ -16,6 +16,7 @@ const article = `<article class="section-shell service-page__legal">
 
   <h2>Dados tratados</h2>
   <p>Podemos tratar nome, telefone, e-mail opcional, empresa opcional, cidade e UF, tipo de equipamento, marca e modelo opcionais, descrição do problema e urgência. Também podemos registrar informações técnicas relacionadas à origem da visita, como página acessada, CTA utilizado, referrer e parâmetros de campanha, incluindo UTMs.</p>
+  <p>As ferramentas de medição recebem apenas contexto de navegação e dos eventos aprovados do funil. Os campos pessoais da Solicitação não são enviados como parâmetros dos eventos de analytics.</p>
   <p>Para proteção contra abuso, a infraestrutura pode utilizar informações de rede de forma transitória. Quando um identificador técnico de rede é necessário para limitar abuso no formulário, ele é transformado em digest criptográfico antes de ser persistido, sem armazenamento intencional do endereço IP bruto nesse registro.</p>
 
   <h2>Finalidades e bases legais</h2>
@@ -27,7 +28,7 @@ const article = `<article class="section-shell service-page__legal">
   <p>A simples ciência desta Política de Privacidade não substitui consentimento quando o consentimento for a base legal necessária para uma finalidade específica.</p>
 
   <h2>Compartilhamento e operadores</h2>
-  <p>Os dados podem ser processados por fornecedores necessários para hospedagem, banco de dados, segurança e comunicação do site. No fluxo atual, isso pode incluir a Vercel para hospedagem, o Supabase para infraestrutura de dados e o WhatsApp, operado pela Meta, quando você decide continuar a conversa por esse canal.</p>
+  <p>Os dados podem ser processados por fornecedores necessários para hospedagem, banco de dados, segurança, medição e comunicação do site. No fluxo atual, isso pode incluir a Vercel para hospedagem e Web Analytics, o Google Analytics para medição opcional quando autorizada, o Supabase para infraestrutura de dados e o WhatsApp, operado pela Meta, quando você decide continuar a conversa por esse canal.</p>
   <p>Esses fornecedores possuem termos e práticas próprias e podem operar infraestrutura fora do Brasil. O compartilhamento é limitado ao necessário para executar as respectivas funções. Não vendemos seus dados pessoais e não disponibilizamos o conteúdo da Solicitação publicamente.</p>
 
   <h2>Retenção</h2>
@@ -40,7 +41,9 @@ const article = `<article class="section-shell service-page__legal">
   <p>Nos termos da legislação aplicável, você pode solicitar confirmação da existência de tratamento, acesso, correção, informação sobre compartilhamento, anonimização, bloqueio ou eliminação quando cabíveis, além de exercer outros direitos previstos na legislação. Solicitações serão analisadas considerando a identidade do requerente, a natureza do pedido e eventuais obrigações de retenção.</p>
 
   <h2>Cookies e tecnologias</h2>
-  <p>No fluxo público atual, o registro de uma Solicitação não depende de cookies publicitários. O site pode utilizar recursos técnicos necessários ao funcionamento, segurança e hospedagem e pode ler parâmetros de campanha presentes na própria URL para identificar a origem de uma Solicitação. Caso ferramentas não essenciais de analytics, publicidade, remarketing ou tecnologias equivalentes sejam ativadas e exijam controles adicionais, esta política e a interface de preferência serão atualizadas antes do uso correspondente.</p>
+  <p>O registro de uma Solicitação não depende de cookies publicitários. O site utiliza o Vercel Web Analytics para métricas operacionais e eventos customizados limitados ao contexto aprovado, sem enviar os campos pessoais da Solicitação como parâmetros desses eventos.</p>
+  <p>O Google Analytics é uma medição opcional. Por padrão, a medição do Google e os sinais de publicidade permanecem desativados, e a tag do Google só é carregada depois que você aceita a medição. A escolha é guardada localmente no navegador para não perguntar a cada acesso e pode ser alterada a qualquer momento em <strong>Preferências de privacidade</strong> no rodapé. Recusar a medição opcional não impede o uso do site nem o envio de uma Solicitação.</p>
+  <p>O site também pode ler parâmetros de campanha presentes na própria URL para identificar a origem de uma Solicitação. Caso publicidade, remarketing ou tecnologias equivalentes sejam ativadas no futuro, os controles e esta política serão revistos antes do uso correspondente.</p>
 
   <h2>WhatsApp e serviços de terceiros</h2>
   <p>Ao escolher continuar o atendimento pelo WhatsApp, sua interação passa também a estar sujeita aos termos e políticas da plataforma. O site envia ao WhatsApp apenas o resumo necessário para identificar a Solicitação e facilitar a continuidade do contato, incluindo o identificador público da Solicitação e informações operacionais informadas por você.</p>
@@ -50,7 +53,7 @@ const article = `<article class="section-shell service-page__legal">
 
   <h2>Contato</h2>
   <p>Para dúvidas sobre privacidade, exercício de direitos ou informações sobre uma Solicitação, entre em contato com a CKF Manutenção pelos canais oficiais informados neste site.</p>
-  <p><small>Última atualização: 26 de agosto de 2026.</small></p>
+  <p><small>Última atualização: 27 de agosto de 2026.</small></p>
 </article>`
 
 let html = readFileSync(file, 'utf8')

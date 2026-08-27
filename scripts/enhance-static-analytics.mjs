@@ -6,6 +6,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const distClient = path.join(root, 'dist', 'client')
 const marker = '<!-- ckf:web-analytics -->'
 const snippet = `${marker}
+<link rel="stylesheet" href="/analytics-consent.css">
 <script src="/analytics-init.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>`
 
@@ -27,4 +28,4 @@ for (const file of htmlFiles(distClient)) {
   enhanced += 1
 }
 
-console.log(`Enhanced Web Analytics for ${enhanced} HTML pages`)
+console.log(`Enhanced analytics stack for ${enhanced} HTML pages`)

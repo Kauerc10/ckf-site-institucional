@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { SERVICE_PAGES } from '../service-pages.mjs'
-import { sanitizeAnalyticsProperties } from '../src/analytics.js'
+import { sanitizeAnalyticsProperties, trackEvent } from '../src/analytics.js'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const dialog = readFileSync(path.join(root, 'src', 'TicketRequestDialog.jsx'), 'utf8')
@@ -93,4 +93,93 @@ test('Web Analytics é injetado uma vez em toda página pública gerada', () => 
     assert.equal((html.match(/\/_vercel\/insights\/script\.js/g) ?? []).length, 1, `script do Web Analytics ausente ou duplicado em ${htmlPath}`)
     assert.doesNotMatch(html, /<script>\s*window\.va/, `fila inline viola a CSP em ${htmlPath}`)
   }
+})
+
+test('Google Analytics usa o fluxo aprovado e não recebe eventos fora do adapter de consentimento', () => {
+  const calls = []
+  const previousWindow = globalThis.window
+  globalThis.window = {
+    va() {},
+    ckfGoogleAnalytics: {
+      track(name, data) { calls.push({ name, data }) },
+    },
+  }
+
+  try {
+    trackEvent('ticket_success', {
+      page: '/',
+      ctaSource: 'ticket-dialog',
+      phone: '47999999999',
+    })
+  } finally {
+    if (previousWindow === undefined) delete globalThis.window
+    else globalThis.window = previousWindow
+  }
+
+  assert.deepEqual(calls, [{
+    name: 'ticket_success',
+    data: { page: '/', ctaSource: 'ticket-dialog' },
+  }])
+})
+
+test('Google Analytics 4 exige consentimento explícito antes de carregar a tag', () => {
+  const initSource = readFileSync(path.join(root, 'public', 'analytics-init.js'), 'utf8')
+
+  assert.match(initSource, /G-46ZTK5JDFX/)
+  assert.match(initSource, /window\.dataLayer\s*=\s*window\.dataLayer\s*\|\|\s*\[\]/)
+  assert.match(initSource, /gtag\('consent',\s*'default'/)
+  assert.match(initSource, /analytics_storage:\s*'denied'/)
+  assert.match(initSource, /ad_storage:\s*'denied'/)
+  assert.match(initSource, /ad_user_data:\s*'denied'/)
+  assert.match(initSource, /ad_personalization:\s*'denied'/)
+  assert.match(initSource, /analytics_storage:\s*'granted'/)
+  assert.match(initSource, /https:\/\/www\.googletagmanager\.com\/gtag\/js\?id=/)
+  assert.match(initSource, /ckf:analytics-consent:v1/)
+  assert.match(initSource, /Aceitar medição/)
+  assert.match(initSource, /Recusar medição opcional/)
+  assert.match(initSource, /Preferências de privacidade/)
+  assert.doesNotMatch(initSource, /phone|email|contactName|description/)
+})
+
+test('revogar medição encerra a tag ativa na navegação atual', () => {
+  const initSource = readFileSync(path.join(root, 'public', 'analytics-init.js'), 'utf8')
+  assert.match(initSource, /if \(googleTagLoaded\)[\s\S]*window\.location\.reload\(\)/)
+})
+
+test('primeira exibição do diálogo move foco para uma ação', () => {
+  const initSource = readFileSync(path.join(root, 'public', 'analytics-init.js'), 'utf8')
+  assert.match(initSource, /if \(consentChoice === null\) showPreferences\(\{ focusAction: true \}\)/)
+})
+
+test('bundle de consentimento é publicado uma vez em todas as páginas', () => {
+  const consentCssPath = path.join(root, 'public', 'analytics-consent.css')
+  assert.ok(existsSync(consentCssPath), 'faltou o CSS do controle de consentimento')
+  const consentCss = readFileSync(consentCssPath, 'utf8')
+  assert.match(consentCss, /\.analytics-consent/)
+
+  const htmlPaths = [
+    path.join(distClient, 'index.html'),
+    path.join(distClient, 'servicos', 'index.html'),
+    path.join(distClient, 'privacidade', 'index.html'),
+    path.join(distClient, 'marketing', 'index.html'),
+    ...SERVICE_PAGES.map((page) => path.join(distClient, 'servicos', page.slug, 'index.html')),
+  ]
+
+  for (const htmlPath of htmlPaths) {
+    const html = readFileSync(htmlPath, 'utf8')
+    assert.equal((html.match(/\/analytics-consent\.css/g) ?? []).length, 1, `CSS de consentimento ausente ou duplicado em ${htmlPath}`)
+  }
+})
+
+test('CSP libera somente os endpoints necessários do GA4 sem inline script', () => {
+  const vercelConfig = JSON.parse(readFileSync(path.join(root, 'vercel.json'), 'utf8'))
+  const csp = vercelConfig.headers
+    .flatMap((rule) => rule.headers ?? [])
+    .find((header) => header.key === 'Content-Security-Policy')?.value ?? ''
+
+  assert.match(csp, /script-src[^;]*https:\/\/www\.googletagmanager\.com/)
+  assert.match(csp, /connect-src[^;]*https:\/\/\*\.google-analytics\.com/)
+  assert.match(csp, /connect-src[^;]*https:\/\/\*\.analytics\.google\.com/)
+  assert.match(csp, /img-src[^;]*https:\/\/\*\.google-analytics\.com/)
+  assert.doesNotMatch(csp, /script-src[^;]*'unsafe-inline'/)
 })
