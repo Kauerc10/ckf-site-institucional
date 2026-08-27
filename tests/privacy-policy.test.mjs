@@ -87,6 +87,15 @@ test('Política de Privacidade cobre os pontos essenciais da jornada de Solicita
   assert.match(privacyHtml, /Rodovia BR-101, 6780/i)
 })
 
+test('Política explica a medição da Vercel e o Google Analytics opcional', () => {
+  assert.match(privacyHtml, /Vercel Web Analytics/i)
+  assert.match(privacyHtml, /Google Analytics/i)
+  assert.match(privacyHtml, /consentimento/i)
+  assert.match(privacyHtml, /preferências de privacidade/i)
+  assert.match(privacyHtml, /dados pessoais.*Solicitação|campos pessoais.*Solicitação/i)
+  assert.match(privacyHtml, /27 de agosto de 2026/i)
+})
+
 test('Política de Comunicações e Marketing é publicada com escopo e saída claros', () => {
   assert.ok(existsSync(marketingPath), 'faltou gerar /marketing/index.html')
   const marketingHtml = readFileSync(marketingPath, 'utf8')
