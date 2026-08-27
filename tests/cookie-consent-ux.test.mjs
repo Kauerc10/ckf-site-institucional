@@ -10,12 +10,27 @@ const consentCss = readFileSync(path.join(root, 'public', 'analytics-consent.css
 const ticketDialog = readFileSync(path.join(root, 'src', 'TicketRequestDialog.jsx'), 'utf8')
 const privacySource = readFileSync(path.join(root, 'scripts', 'enhance-static-privacy.mjs'), 'utf8')
 
+function getBannerCopy() {
+  const match = initSource.match(/'analytics-consent__copy',\s*'([^']+)'/s)
+  assert.ok(match, 'não encontrou o texto principal do banner')
+  return match[1]
+}
+
 test('banner apresenta cookies em linguagem familiar e ações explícitas', () => {
   assert.match(initSource, /Cookies e privacidade/)
   assert.match(initSource, /cookies opcionais/i)
   assert.match(initSource, /Aceitar todos/)
   assert.match(initSource, /Rejeitar opcionais/)
   assert.match(initSource, /Preferências de cookies/)
+})
+
+test('banner explica a escolha sem expor fornecedores ou tecnês', () => {
+  const copy = getBannerCopy()
+
+  assert.ok(copy.length <= 180, `banner ficou longo demais: ${copy.length} caracteres`)
+  assert.match(copy, /cookies opcionais/i)
+  assert.match(copy, /Solicitações/i)
+  assert.doesNotMatch(copy, /Google|Vercel|Analytics|métricas operacionais/i)
 })
 
 test('aceite continua opt-in e nunca é concedido automaticamente', () => {
