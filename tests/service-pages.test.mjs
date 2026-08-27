@@ -4,17 +4,17 @@ import path from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { SERVICE_PAGES } from '../service-pages.mjs'
+import { SITE_URL } from '../site.config.mjs'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const distClient = path.join(root, 'dist', 'client')
-const siteUrl = 'https://ckf-home.vercel.app'
 
 for (const page of SERVICE_PAGES) {
   test(`gera página estática e indexável para ${page.slug}`, () => {
     const pagePath = path.join(distClient, 'servicos', page.slug, 'index.html')
     assert.equal(existsSync(pagePath), true, `${page.slug} deve existir no artefato final`)
     const html = readFileSync(pagePath, 'utf8')
-    const canonical = `${siteUrl}/servicos/${page.slug}`
+    const canonical = `${SITE_URL}/servicos/${page.slug}`
     assert.match(html, new RegExp(`<link rel="canonical" href="${canonical}"`))
     assert.match(html, new RegExp(`<h1>${page.heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}</h1>`))
     assert.match(html, /Solicitar orçamento/)
@@ -26,6 +26,6 @@ for (const page of SERVICE_PAGES) {
 test('inclui todas as páginas de serviço no sitemap', () => {
   const sitemap = readFileSync(path.join(distClient, 'sitemap.xml'), 'utf8')
   for (const page of SERVICE_PAGES) {
-    assert.match(sitemap, new RegExp(`<loc>${siteUrl}/servicos/${page.slug}</loc>`))
+    assert.match(sitemap, new RegExp(`<loc>${SITE_URL}/servicos/${page.slug}</loc>`))
   }
 })
