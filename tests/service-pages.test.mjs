@@ -15,7 +15,7 @@ for (const page of SERVICE_PAGES) {
     assert.equal(existsSync(pagePath), true, `${page.slug} deve existir no artefato final`)
     const html = readFileSync(pagePath, 'utf8')
     const canonical = `${SITE_URL}/servicos/${page.slug}`
-    assert.match(html, new RegExp(`<link rel="canonical" href="${canonical}"`))
+    assert.ok(html.includes(`<link rel="canonical" href="${canonical}"`))
     assert.match(html, new RegExp(`<h1>${page.heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}</h1>`))
     assert.match(html, /Solicitar orçamento/)
     assert.match(html, /https:\/\/wa\.me\/5547991214232\?text=/)
@@ -26,6 +26,6 @@ for (const page of SERVICE_PAGES) {
 test('inclui todas as páginas de serviço no sitemap', () => {
   const sitemap = readFileSync(path.join(distClient, 'sitemap.xml'), 'utf8')
   for (const page of SERVICE_PAGES) {
-    assert.match(sitemap, new RegExp(`<loc>${SITE_URL}/servicos/${page.slug}</loc>`))
+    assert.ok(sitemap.includes(`<loc>${SITE_URL}/servicos/${page.slug}</loc>`))
   }
 })
