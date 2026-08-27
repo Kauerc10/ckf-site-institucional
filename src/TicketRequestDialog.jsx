@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { FaArrowLeft, FaArrowRight, FaCheck, FaWhatsapp, FaXmark } from 'react-icons/fa6'
 import { SERVICE_PAGES } from '../service-pages.mjs'
-import { trackEvent } from './analytics.js'
+import { trackEvent, trackEventAndWait } from './analytics.js'
 import {
   buildTicketPayload,
   buildTicketWhatsAppUrl,
@@ -101,7 +101,7 @@ export function TicketRequestDialog({ open, source = 'unknown', initialServiceSl
       const attribution = readTicketAttribution({ ctaSource: source })
       const payload = buildTicketPayload({ service, form, attribution, idempotencyKey })
       const { publicId } = await submitTicket(payload)
-      trackEvent('ticket_success', { page: pagePath(), serviceSlug, ctaSource: source, status: 'success' })
+      await trackEventAndWait('ticket_success', { page: pagePath(), serviceSlug, ctaSource: source, status: 'success' })
       const whatsappUrl = buildTicketWhatsAppUrl({publicId,serviceName:service.ctaService || service.cardTitle,equipmentType:form.equipmentType,description:form.description,urgency:form.urgency})
       globalThis.location.assign(whatsappUrl)
     } catch (submitError) {
