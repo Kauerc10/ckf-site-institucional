@@ -117,5 +117,5 @@ test('Política de Comunicações e Marketing é publicada com escopo e saída c
 })
 
 test('sitemap publica a política de marketing junto das páginas legais', () => {
-  assert.match(sitemap, new RegExp(`<loc>${SITE_URL}/marketing</loc>`))
+  assert.ok(sitemap.includes(`<loc>${SITE_URL}/marketing</loc>`))
 })
