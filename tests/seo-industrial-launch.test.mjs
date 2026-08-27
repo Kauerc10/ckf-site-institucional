@@ -4,6 +4,7 @@ import path from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { SERVICE_PAGES } from '../service-pages.mjs'
+import { SITE_URL } from '../site.config.mjs'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const client = path.join(root, 'dist', 'client')
@@ -117,10 +118,10 @@ test('landing pages registram Solicitação antes do CTA principal de WhatsApp',
 
 test('sitemap inclui home, hub, privacidade e todo o cluster comercial', () => {
   const sitemap = readFileSync(path.join(client, 'sitemap.xml'), 'utf8')
-  assert.match(sitemap, /<loc>https:\/\/ckf-home\.vercel\.app\/servicos<\/loc>/)
-  assert.match(sitemap, /<loc>https:\/\/ckf-home\.vercel\.app\/privacidade<\/loc>/)
+  assert.ok(sitemap.includes(`<loc>${SITE_URL}/servicos</loc>`))
+  assert.ok(sitemap.includes(`<loc>${SITE_URL}/privacidade</loc>`))
   for (const slug of requiredSlugs) {
-    assert.match(sitemap, new RegExp(`<loc>https:\\/\\/ckf-home\\.vercel\\.app\\/servicos\\/${slug}<\\/loc>`))
+    assert.ok(sitemap.includes(`<loc>${SITE_URL}/servicos/${slug}</loc>`))
   }
   assert.doesNotMatch(sitemap, /<changefreq>/)
 })

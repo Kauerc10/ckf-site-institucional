@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
+import { SITE_URL } from '../site.config.mjs'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const dialog = readFileSync(path.join(root, 'src', 'TicketRequestDialog.jsx'), 'utf8')
@@ -116,5 +117,5 @@ test('Política de Comunicações e Marketing é publicada com escopo e saída c
 })
 
 test('sitemap publica a política de marketing junto das páginas legais', () => {
-  assert.match(sitemap, /<loc>https:\/\/ckf-home\.vercel\.app\/marketing<\/loc>/)
+  assert.ok(sitemap.includes(`<loc>${SITE_URL}/marketing</loc>`))
 })
