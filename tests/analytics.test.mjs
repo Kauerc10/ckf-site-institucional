@@ -3,14 +3,15 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
+import { SERVICE_PAGES } from '../service-pages.mjs'
 import { sanitizeAnalyticsProperties } from '../src/analytics.js'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const dialog = readFileSync(path.join(root, 'src', 'TicketRequestDialog.jsx'), 'utf8')
 const app = readFileSync(path.join(root, 'src', 'App.jsx'), 'utf8')
-const main = readFileSync(path.join(root, 'src', 'main.jsx'), 'utf8')
 const analyticsSource = readFileSync(path.join(root, 'src', 'analytics.js'), 'utf8')
 const packageJson = JSON.parse(readFileSync(path.join(root, 'package.json'), 'utf8'))
+const distClient = path.join(root, 'dist', 'client')
 
 const allowedEvents = new Set([
   'service_view',
@@ -63,10 +64,25 @@ test('analytics nunca envia campos pessoais conhecidos', () => {
   assert.doesNotMatch(source, /trackEvent\([^\n]+(?:phone|email|contactName|description)/)
 })
 
-test('Vercel Web Analytics coleta pageviews e eventos aprovados', () => {
-  assert.equal(packageJson.dependencies['@vercel/analytics'], '2.0.1')
-  assert.match(main, /from ['"]@vercel\/analytics\/react['"]/)
-  assert.match(main, /<Analytics\s*\/>/)
-  assert.match(analyticsSource, /from ['"]@vercel\/analytics['"]/)
-  assert.match(analyticsSource, /\btrack\(name, data\)/)
+test('custom events usam o contrato oficial da fila window.va', () => {
+  assert.match(analyticsSource, /target\.va\('event',\s*\{\s*name,\s*data\s*\}\)/)
+  assert.doesNotMatch(analyticsSource, /target\.va\('event',\s*name,\s*data\)/)
+})
+
+test('Web Analytics é injetado uma vez em toda página pública gerada', () => {
+  assert.match(packageJson.scripts.build, /enhance-static-analytics\.mjs/)
+
+  const htmlPaths = [
+    path.join(distClient, 'index.html'),
+    path.join(distClient, 'servicos', 'index.html'),
+    path.join(distClient, 'privacidade', 'index.html'),
+    path.join(distClient, 'marketing', 'index.html'),
+    ...SERVICE_PAGES.map((page) => path.join(distClient, 'servicos', page.slug, 'index.html')),
+  ]
+
+  for (const htmlPath of htmlPaths) {
+    const html = readFileSync(htmlPath, 'utf8')
+    assert.equal((html.match(/window\.va\s*=\s*window\.va/g) ?? []).length, 1, `fila va ausente ou duplicada em ${htmlPath}`)
+    assert.equal((html.match(/\/_vercel\/insights\/script\.js/g) ?? []).length, 1, `script do Web Analytics ausente ou duplicado em ${htmlPath}`)
+  }
 })
