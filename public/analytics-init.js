@@ -86,6 +86,10 @@ window.va = window.va || function () {
     }
 
     gtag('consent', 'update', deniedConsent)
+
+    if (googleTagLoaded) {
+      window.location.reload()
+    }
   }
 
   function removeBanner() {
@@ -176,7 +180,7 @@ window.va = window.va || function () {
 
   function mountConsentUi() {
     mountPreferenceControl()
-    if (consentChoice === null) showPreferences()
+    if (consentChoice === null) showPreferences({ focusAction: true })
   }
 
   if (document.readyState === 'loading') {
