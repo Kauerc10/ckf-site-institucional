@@ -118,10 +118,10 @@ test('landing pages registram Solicitação antes do CTA principal de WhatsApp',
 
 test('sitemap inclui home, hub, privacidade e todo o cluster comercial', () => {
   const sitemap = readFileSync(path.join(client, 'sitemap.xml'), 'utf8')
-  assert.match(sitemap, new RegExp(`<loc>${SITE_URL}/servicos</loc>`))
-  assert.match(sitemap, new RegExp(`<loc>${SITE_URL}/privacidade</loc>`))
+  assert.ok(sitemap.includes(`<loc>${SITE_URL}/servicos</loc>`))
+  assert.ok(sitemap.includes(`<loc>${SITE_URL}/privacidade</loc>`))
   for (const slug of requiredSlugs) {
-    assert.match(sitemap, new RegExp(`<loc>${SITE_URL}/servicos/${slug}</loc>`))
+    assert.ok(sitemap.includes(`<loc>${SITE_URL}/servicos/${slug}</loc>`))
   }
   assert.doesNotMatch(sitemap, /<changefreq>/)
 })
