@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const distClient = path.join(root, 'dist', 'client')
-const siteUrl = 'https://ckf-home.vercel.app'
+const siteUrl = 'https://ckfmanutencao.com.br'
 
 test('publica canonical, Open Graph e dados estruturados com URL absoluta', () => {
   const html = readFileSync(path.join(distClient, 'index.html'), 'utf8')
