@@ -24,6 +24,13 @@ window.va = window.va || function () {
     ad_personalization: 'denied',
   }
 
+  const grantedAnalyticsConsent = {
+    analytics_storage: 'granted',
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+  }
+
   gtag('consent', 'default', deniedConsent)
 
   let consentChoice = readStoredChoice()
@@ -44,15 +51,6 @@ window.va = window.va || function () {
       window.localStorage.setItem(STORAGE_KEY, value)
     } catch {
       // A preferência continua válida nesta navegação mesmo sem storage persistente.
-    }
-  }
-
-  function consentState(analyticsStorage) {
-    return {
-      analytics_storage: analyticsStorage,
-      ad_storage: 'denied',
-      ad_user_data: 'denied',
-      ad_personalization: 'denied',
     }
   }
 
@@ -82,12 +80,12 @@ window.va = window.va || function () {
     else consentChoice = value
 
     if (value === GRANTED) {
-      gtag('consent', 'update', consentState('granted'))
+      gtag('consent', 'update', grantedAnalyticsConsent)
       loadGoogleTag()
       return
     }
 
-    gtag('consent', 'update', consentState('denied'))
+    gtag('consent', 'update', deniedConsent)
   }
 
   function removeBanner() {
