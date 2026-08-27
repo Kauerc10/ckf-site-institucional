@@ -8,6 +8,9 @@ import { sanitizeAnalyticsProperties } from '../src/analytics.js'
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const dialog = readFileSync(path.join(root, 'src', 'TicketRequestDialog.jsx'), 'utf8')
 const app = readFileSync(path.join(root, 'src', 'App.jsx'), 'utf8')
+const main = readFileSync(path.join(root, 'src', 'main.jsx'), 'utf8')
+const analyticsSource = readFileSync(path.join(root, 'src', 'analytics.js'), 'utf8')
+const packageJson = JSON.parse(readFileSync(path.join(root, 'package.json'), 'utf8'))
 
 const allowedEvents = new Set([
   'service_view',
@@ -56,6 +59,14 @@ test('instrumentação usa somente eventos do funil aprovado', () => {
 })
 
 test('analytics nunca envia campos pessoais conhecidos', () => {
-  const source = `${readFileSync(path.join(root, 'src', 'analytics.js'), 'utf8')}\n${dialog}`
+  const source = `${analyticsSource}\n${dialog}`
   assert.doesNotMatch(source, /trackEvent\([^\n]+(?:phone|email|contactName|description)/)
+})
+
+test('Vercel Web Analytics coleta pageviews e eventos aprovados', () => {
+  assert.equal(packageJson.dependencies['@vercel/analytics'], '2.0.1')
+  assert.match(main, /from ['"]@vercel\/analytics\/react['"]/)
+  assert.match(main, /<Analytics\s*\/>/)
+  assert.match(analyticsSource, /from ['"]@vercel\/analytics['"]/)
+  assert.match(analyticsSource, /\btrack\(name, data\)/)
 })
