@@ -69,6 +69,13 @@ test('custom events usam o contrato oficial da fila window.va', () => {
   assert.doesNotMatch(analyticsSource, /target\.va\('event',\s*name,\s*data\)/)
 })
 
+test('inicializador do Web Analytics é externo e compatível com a CSP', () => {
+  const initSource = readFileSync(path.join(root, 'public', 'analytics-init.js'), 'utf8')
+  assert.match(initSource, /window\.va\s*=\s*window\.va\s*\|\|/)
+  assert.match(initSource, /window\.vaq\s*=\s*window\.vaq\s*\|\|\s*\[\]/)
+  assert.doesNotMatch(initSource, /phone|email|contactName|description/)
+})
+
 test('Web Analytics é injetado uma vez em toda página pública gerada', () => {
   assert.match(packageJson.scripts.build, /enhance-static-analytics\.mjs/)
 
@@ -82,7 +89,8 @@ test('Web Analytics é injetado uma vez em toda página pública gerada', () => 
 
   for (const htmlPath of htmlPaths) {
     const html = readFileSync(htmlPath, 'utf8')
-    assert.equal((html.match(/window\.va\s*=\s*window\.va/g) ?? []).length, 1, `fila va ausente ou duplicada em ${htmlPath}`)
+    assert.equal((html.match(/\/analytics-init\.js/g) ?? []).length, 1, `inicializador ausente ou duplicado em ${htmlPath}`)
     assert.equal((html.match(/\/_vercel\/insights\/script\.js/g) ?? []).length, 1, `script do Web Analytics ausente ou duplicado em ${htmlPath}`)
+    assert.doesNotMatch(html, /<script>\s*window\.va/, `fila inline viola a CSP em ${htmlPath}`)
   }
 })
