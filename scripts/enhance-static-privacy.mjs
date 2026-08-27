@@ -42,7 +42,7 @@ const article = `<article class="section-shell service-page__legal">
 
   <h2>Cookies e tecnologias</h2>
   <p>O registro de uma Solicitação não depende de cookies publicitários. O site utiliza o Vercel Web Analytics para métricas operacionais e eventos customizados limitados ao contexto aprovado, sem enviar os campos pessoais da Solicitação como parâmetros desses eventos.</p>
-  <p>O Google Analytics é uma medição opcional. Por padrão, a medição do Google e os sinais de publicidade permanecem desativados, e a tag do Google só é carregada depois que você aceita a medição. A escolha é guardada localmente no navegador para não perguntar a cada acesso e pode ser alterada a qualquer momento em <strong>Preferências de privacidade</strong> no rodapé. Recusar a medição opcional não impede o uso do site nem o envio de uma Solicitação.</p>
+  <p>O Google Analytics utiliza cookies de medição opcionais. Por padrão, a medição do Google e os sinais de publicidade permanecem desativados, e a tag do Google só é carregada depois que você aceita os cookies opcionais. A escolha é guardada localmente no navegador para não perguntar a cada acesso e pode ser alterada a qualquer momento em <strong>Preferências de cookies</strong> no rodapé. Recusar os cookies opcionais não impede o uso do site nem o envio de uma Solicitação.</p>
   <p>O site também pode ler parâmetros de campanha presentes na própria URL para identificar a origem de uma Solicitação. Caso publicidade, remarketing ou tecnologias equivalentes sejam ativadas no futuro, os controles e esta política serão revistos antes do uso correspondente.</p>
 
   <h2>WhatsApp e serviços de terceiros</h2>

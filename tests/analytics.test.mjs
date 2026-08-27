@@ -135,9 +135,9 @@ test('Google Analytics 4 exige consentimento explícito antes de carregar a tag'
   assert.match(initSource, /analytics_storage:\s*'granted'/)
   assert.match(initSource, /https:\/\/www\.googletagmanager\.com\/gtag\/js\?id=/)
   assert.match(initSource, /ckf:analytics-consent:v1/)
-  assert.match(initSource, /Aceitar medição/)
-  assert.match(initSource, /Recusar medição opcional/)
-  assert.match(initSource, /Preferências de privacidade/)
+  assert.match(initSource, /Aceitar todos/)
+  assert.match(initSource, /Rejeitar opcionais/)
+  assert.match(initSource, /Preferências de cookies/)
   assert.doesNotMatch(initSource, /phone|email|contactName|description/)
 })
 

@@ -113,13 +113,13 @@ window.va = window.va || function () {
     panel.setAttribute('aria-describedby', 'ckf-analytics-consent-copy')
 
     const content = makeElement('div', 'analytics-consent__content')
-    const eyebrow = makeElement('p', 'analytics-consent__eyebrow', 'Privacidade')
-    const title = makeElement('h2', 'analytics-consent__title', 'Privacidade e medição')
+    const eyebrow = makeElement('p', 'analytics-consent__eyebrow', 'Cookies')
+    const title = makeElement('h2', 'analytics-consent__title', 'Cookies e privacidade')
     title.id = 'ckf-analytics-consent-title'
     const copy = makeElement(
       'p',
       'analytics-consent__copy',
-      'Usamos a Vercel para métricas operacionais do site. O Google Analytics só é carregado se você autorizar a medição. Os dados preenchidos na Solicitação não são enviados como parâmetros de analytics.',
+      'Usamos tecnologias essenciais para o funcionamento do site e a Vercel para métricas operacionais. Com sua autorização, também usamos cookies do Google Analytics para entender o uso do site. Recusar cookies opcionais não afeta o envio de Solicitações.',
     )
     copy.id = 'ckf-analytics-consent-copy'
 
@@ -127,9 +127,9 @@ window.va = window.va || function () {
     policy.href = '/privacidade'
 
     const actions = makeElement('div', 'analytics-consent__actions')
-    const reject = makeElement('button', 'analytics-consent__action analytics-consent__action--secondary', 'Recusar medição opcional')
+    const reject = makeElement('button', 'analytics-consent__action analytics-consent__action--secondary', 'Rejeitar opcionais')
     reject.type = 'button'
-    const accept = makeElement('button', 'analytics-consent__action analytics-consent__action--primary', 'Aceitar medição')
+    const accept = makeElement('button', 'analytics-consent__action analytics-consent__action--primary', 'Aceitar todos')
     accept.type = 'button'
 
     reject.addEventListener('click', () => {
@@ -155,7 +155,7 @@ window.va = window.va || function () {
 
     const separator = makeElement('span', '', '·')
     separator.setAttribute('aria-hidden', 'true')
-    const button = makeElement('button', 'analytics-consent__manage', 'Preferências de privacidade')
+    const button = makeElement('button', 'analytics-consent__manage', 'Preferências de cookies')
     button.type = 'button'
     button.addEventListener('click', () => showPreferences({ focusAction: true }))
     policies.append(separator, button)
