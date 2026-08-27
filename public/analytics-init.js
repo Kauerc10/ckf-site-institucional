@@ -7,6 +7,7 @@ window.va = window.va || function () {
   const STORAGE_KEY = 'ckf:analytics-consent:v1'
   const GRANTED = 'granted'
   const DENIED = 'denied'
+  const EVENT_TIMEOUT_MS = 1200
 
   window.dataLayer = window.dataLayer || []
   window.gtag = window.gtag || function () {
@@ -172,6 +173,30 @@ window.va = window.va || function () {
     track(name, data) {
       if (consentChoice !== GRANTED || typeof name !== 'string' || !name) return
       gtag('event', name, data || {})
+    },
+    trackAndWait(name, data) {
+      return new Promise((resolve) => {
+        if (consentChoice !== GRANTED || typeof name !== 'string' || !name) {
+          resolve(false)
+          return
+        }
+
+        let settled = false
+        const finish = () => {
+          if (settled) return
+          settled = true
+          resolve(true)
+        }
+
+        gtag('event', name, {
+          ...(data || {}),
+          send_to: MEASUREMENT_ID,
+          event_callback: finish,
+          event_timeout: EVENT_TIMEOUT_MS,
+        })
+
+        window.setTimeout(finish, EVENT_TIMEOUT_MS + 100)
+      })
     },
   }
 
