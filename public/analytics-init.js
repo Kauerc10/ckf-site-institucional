@@ -119,7 +119,7 @@ window.va = window.va || function () {
     const copy = makeElement(
       'p',
       'analytics-consent__copy',
-      'Usamos tecnologias essenciais para o funcionamento do site e a Vercel para métricas operacionais. Com sua autorização, também usamos cookies do Google Analytics para entender o uso do site. Recusar cookies opcionais não afeta o envio de Solicitações.',
+      'Usamos cookies opcionais para entender como o site é utilizado e melhorar sua experiência. Sua escolha não afeta o envio de Solicitações.',
     )
     copy.id = 'ckf-analytics-consent-copy'
 
