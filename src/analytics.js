@@ -11,11 +11,7 @@ export function sanitizeAnalyticsProperties(properties = {}) {
   return clean
 }
 
-export function trackEvent(name, properties = {}) {
-  if (typeof name !== 'string' || !name.trim()) return
-  const data = sanitizeAnalyticsProperties(properties)
-  const target = globalThis.window ?? globalThis
-
+function publishLocalAndVercel(target, name, data) {
   try {
     target.dispatchEvent?.(new CustomEvent('ckf:analytics', { detail: { name, properties: data } }))
   } catch {
@@ -23,14 +19,45 @@ export function trackEvent(name, properties = {}) {
   }
 
   try {
-    if (typeof target.va === 'function') target.va('event', name, data)
+    if (typeof target.va === 'function') target.va('event', { name, data })
   } catch {
     // Provider opcional.
   }
+}
+
+export function trackEvent(name, properties = {}) {
+  if (typeof name !== 'string' || !name.trim()) return
+  const data = sanitizeAnalyticsProperties(properties)
+  const target = globalThis.window ?? globalThis
+
+  publishLocalAndVercel(target, name, data)
 
   try {
-    if (Array.isArray(target.dataLayer)) target.dataLayer.push({ event: name, ...data })
+    if (typeof target.ckfGoogleAnalytics?.track === 'function') {
+      target.ckfGoogleAnalytics.track(name, data)
+    }
   } catch {
-    // Provider opcional.
+    // Provider opcional e condicionado à preferência do visitante.
+  }
+}
+
+export async function trackEventAndWait(name, properties = {}) {
+  if (typeof name !== 'string' || !name.trim()) return
+  const data = sanitizeAnalyticsProperties(properties)
+  const target = globalThis.window ?? globalThis
+
+  publishLocalAndVercel(target, name, data)
+
+  try {
+    if (typeof target.ckfGoogleAnalytics?.trackAndWait === 'function') {
+      await target.ckfGoogleAnalytics.trackAndWait(name, data)
+      return
+    }
+
+    if (typeof target.ckfGoogleAnalytics?.track === 'function') {
+      target.ckfGoogleAnalytics.track(name, data)
+    }
+  } catch {
+    // Analytics nunca bloqueia a continuação da jornada.
   }
 }

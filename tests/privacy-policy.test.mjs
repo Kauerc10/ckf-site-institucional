@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
+import { SITE_URL } from '../site.config.mjs'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const dialog = readFileSync(path.join(root, 'src', 'TicketRequestDialog.jsx'), 'utf8')
@@ -86,6 +87,15 @@ test('Política de Privacidade cobre os pontos essenciais da jornada de Solicita
   assert.match(privacyHtml, /Rodovia BR-101, 6780/i)
 })
 
+test('Política explica a medição da Vercel e o Google Analytics opcional', () => {
+  assert.match(privacyHtml, /Vercel Web Analytics/i)
+  assert.match(privacyHtml, /Google Analytics/i)
+  assert.match(privacyHtml, /consentimento/i)
+  assert.match(privacyHtml, /preferências de cookies/i)
+  assert.match(privacyHtml, /dados pessoais.*Solicitação|campos pessoais.*Solicitação/i)
+  assert.match(privacyHtml, /27 de agosto de 2026/i)
+})
+
 test('Política de Comunicações e Marketing é publicada com escopo e saída claros', () => {
   assert.ok(existsSync(marketingPath), 'faltou gerar /marketing/index.html')
   const marketingHtml = readFileSync(marketingPath, 'utf8')
@@ -116,5 +126,5 @@ test('Política de Comunicações e Marketing é publicada com escopo e saída c
 })
 
 test('sitemap publica a política de marketing junto das páginas legais', () => {
-  assert.match(sitemap, /<loc>https:\/\/ckf-home\.vercel\.app\/marketing<\/loc>/)
+  assert.ok(sitemap.includes(`<loc>${SITE_URL}/marketing</loc>`))
 })
