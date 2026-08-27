@@ -62,6 +62,10 @@ test('consultar privacidade não destrói o formulário em andamento', () => {
   assert.match(dialog, /href="\/privacidade"[^>]*target="_blank"[^>]*rel="noreferrer"/)
 })
 
+test('aviso de políticas fica centralizado no modal', () => {
+  assert.match(ticketCss, /\.ticket-form__privacy\s*\{[^}]*text-align:\s*center;/s)
+})
+
 test('autocomplete não tenta preencher cargo profissional como marca do equipamento', () => {
   assert.doesNotMatch(dialog, /equipmentBrand[^>]*autoComplete="organization-title"/)
 })
