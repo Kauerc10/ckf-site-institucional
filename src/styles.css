@@ -56,3 +56,8 @@ td a { display:grid; width:31px; height:31px; place-items:center; border:1px sol
 .about__portrait--left { z-index:2; left:-10%; width:68%; }
 .about__portrait--right { right:-9%; width:68%; }
 @media (max-width:800px) { .about__portraits:before { right:0; left:3%; width:auto; }.about__portrait--left { left:-13%; width:72%; }.about__portrait--right { right:-12%; width:72%; } }
+
+/* A fachada ocupa a direita do cartão com mais presença, sem perder a leitura do endereço. */
+.location__card>img { object-position:center 31%; opacity:.88; }
+.location__card:after { background:linear-gradient(90deg,rgba(9,12,13,.96) 0%,rgba(9,12,13,.91) 35%,rgba(9,12,13,.53) 59%,rgba(9,12,13,.18) 100%); }
+@media (max-width:800px) { .location__card>img { object-position:center 27%; opacity:.72; }.location__card:after { background:linear-gradient(180deg,rgba(9,12,13,.78) 0%,rgba(9,12,13,.82) 72%,rgba(9,12,13,.93) 100%); } }
