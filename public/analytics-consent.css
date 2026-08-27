@@ -59,18 +59,32 @@
   text-transform: uppercase;
   letter-spacing: .02em;
   cursor: pointer;
+  transition: background-color .18s ease, border-color .18s ease, box-shadow .18s ease;
 }
 
 .analytics-consent__action--primary {
+  min-width: 172px;
   border: 1px solid #f6b900;
   background: #f6b900;
   color: #090c0d;
+  box-shadow: 0 8px 22px rgba(246, 185, 0, .22);
+}
+
+.analytics-consent__action--primary:hover {
+  border-color: #ffd34d;
+  background: #ffd34d;
+  box-shadow: 0 10px 26px rgba(246, 185, 0, .30);
 }
 
 .analytics-consent__action--secondary {
   border: 1px solid rgba(247, 247, 244, .28);
   background: transparent;
   color: #f7f7f4;
+}
+
+.analytics-consent__action--secondary:hover {
+  border-color: rgba(247, 247, 244, .52);
+  background: rgba(247, 247, 244, .06);
 }
 
 .analytics-consent__action:focus-visible,
