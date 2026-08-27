@@ -8,6 +8,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const initSource = readFileSync(path.join(root, 'public', 'analytics-init.js'), 'utf8')
 const consentCss = readFileSync(path.join(root, 'public', 'analytics-consent.css'), 'utf8')
 const ticketDialog = readFileSync(path.join(root, 'src', 'TicketRequestDialog.jsx'), 'utf8')
+const privacySource = readFileSync(path.join(root, 'scripts', 'enhance-static-privacy.mjs'), 'utf8')
 
 test('banner apresenta cookies em linguagem familiar e ações explícitas', () => {
   assert.match(initSource, /Cookies e privacidade/)
@@ -32,4 +33,9 @@ test('aceitar todos permanece visualmente primário sem esconder a rejeição', 
   assert.match(consentCss, /\.analytics-consent__action--primary\s*\{[^}]*background:\s*#f6b900/s)
   assert.match(consentCss, /\.analytics-consent__action--primary\s*\{[^}]*box-shadow:/s)
   assert.match(consentCss, /\.analytics-consent__action--secondary\s*\{[^}]*border:/s)
+})
+
+test('Política de Privacidade aponta para o mesmo controle exibido no rodapé', () => {
+  assert.match(privacySource, /Preferências de cookies/)
+  assert.doesNotMatch(privacySource, /Preferências de privacidade/)
 })
