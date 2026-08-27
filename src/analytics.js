@@ -23,7 +23,7 @@ export function trackEvent(name, properties = {}) {
   }
 
   try {
-    if (typeof target.va === 'function') target.va('event', name, data)
+    if (typeof target.va === 'function') target.va('event', { name, data })
   } catch {
     // Provider opcional.
   }
