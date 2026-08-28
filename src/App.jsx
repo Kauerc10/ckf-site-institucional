@@ -93,10 +93,9 @@ export function App() {
       <div className="section-shell about__layout">
         <div className="about__copy">
           <p className="eyebrow">Quem somos</p>
-          <h2>Trabalho de verdade. Parceria que mantém sua operação em movimento.</h2>
+          <h2>Trabalho de verdade. Parceria que mantém <span>sua operação em movimento.</span></h2>
           <p>A CKF trabalha lado a lado com quem depende da operação funcionando. Da primeira conversa à entrega, nossa equipe combina experiência de campo, diagnóstico claro e execução responsável para encontrar a solução certa, sem enrolação.</p>
           <div className="about__commitments" aria-label="Compromissos da CKF"><span>Atendimento direto</span><span>Diagnóstico transparente</span><span>Compromisso com a entrega</span></div>
-          <p className="about__signature">Sócios fundadores · CKF Manutenção</p>
         </div>
         <div className="about__portraits" aria-label="Sócios fundadores da CKF Manutenção">
           <figure className="about__founder about__founder--left">
