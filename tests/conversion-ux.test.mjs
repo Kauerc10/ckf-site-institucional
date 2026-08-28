@@ -9,6 +9,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const app = readFileSync(path.join(root, 'src', 'App.jsx'), 'utf8')
 const dialog = readFileSync(path.join(root, 'src', 'TicketRequestDialog.jsx'), 'utf8')
 const ticketCss = readFileSync(path.join(root, 'src', 'ticket-request.css'), 'utf8')
+const styles = readFileSync(path.join(root, 'src', 'styles.css'), 'utf8')
 const mobileCss = readFileSync(path.join(root, 'public', 'mobile-a11y.css'), 'utf8')
 const serviceHtml = readFileSync(path.join(root, 'dist', 'client', 'servicos', 'reforma-chassis', 'index.html'), 'utf8')
 const vercel = JSON.parse(readFileSync(path.join(root, 'vercel.json'), 'utf8'))
@@ -117,4 +118,26 @@ test('formulário usa viewport dinâmica e geometria industrial da CKF', () => {
 test('página pública não expõe o jargão interno Ticket', () => {
   assert.doesNotMatch(serviceHtml, /\bTicket\b/i)
   assert.match(serviceHtml, /Solicitação/)
+})
+
+test('fundadores são identificados junto aos respectivos retratos', () => {
+  assert.match(app, /about__portrait--left[\s\S]*?Cleber/)
+  assert.match(app, /about__portrait--right[\s\S]*?Roberto/)
+})
+
+test('processo apresenta a jornada completa em cinco etapas', () => {
+  for (const label of ['Solicitação do atendimento', 'Análise e diagnóstico', 'Orçamento e alinhamento', 'Execução acompanhada', 'Teste e entrega']) {
+    assert.match(app, new RegExp(label))
+  }
+  assert.match(app, /'05'/)
+})
+
+test('primeiro passo do processo abre a Solicitação integrada', () => {
+  assert.match(app, /data-ticket-trigger="process"/)
+  assert.match(app, /openTicket\('process'\)/)
+})
+
+test('faixa da equipe mantém composição centralizada em telas largas', () => {
+  assert.match(styles, /\.trust__layout\s*\{[^}]*max-width:\s*1440px;/s)
+  assert.match(styles, /\.trust__media img\s*\{[^}]*object-fit:\s*contain;/s)
 })
