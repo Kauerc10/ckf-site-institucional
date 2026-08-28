@@ -62,12 +62,12 @@ td a { display:grid; width:31px; height:31px; place-items:center; border:1px sol
 .location__card:after { background:linear-gradient(90deg,rgba(9,12,13,.96) 0%,rgba(9,12,13,.91) 35%,rgba(9,12,13,.53) 59%,rgba(9,12,13,.18) 100%); }
 @media (max-width:800px) { .location__card>img { object-position:center 27%; opacity:.72; }.location__card:after { background:linear-gradient(180deg,rgba(9,12,13,.78) 0%,rgba(9,12,13,.82) 72%,rgba(9,12,13,.93) 100%); } }
 
-/* Fluxo do processo centralizado e conectado por um traçado técnico em degraus. */
-.process__track { max-width:1160px; margin-right:auto; margin-left:auto; gap:68px; }
-.process__step { display:flex; flex-direction:column; align-items:center; padding:0 8px; text-align:center; }
+/* O processo usa uma linha de produção limpa: os marcos fazem a leitura, não o conector. */
+.process__track { max-width:1160px; margin-right:auto; margin-left:auto; gap:0; }
+.process__track:before { top:49px; left:16.7%; right:16.7%; height:1px; background:linear-gradient(90deg,transparent 0%,rgba(246,185,0,.5) 9%,var(--yellow) 50%,rgba(246,185,0,.5) 91%,transparent 100%); }
+.process__step { display:flex; flex-direction:column; align-items:center; padding:0 24px; background:transparent; text-align:center; }
 .process__icon { margin-bottom:22px; }
-.process__step:nth-child(-n+2):after { top:30px; right:-44px; width:88px; height:38px; border:1px solid rgba(246,185,0,.8); border-left:0; border-radius:0 14px 14px 0; background:none; clip-path:none; }
-.process__step:nth-child(-n+2):before { position:absolute; z-index:4; top:61px; right:-47px; width:8px; height:8px; content:''; border-top:2px solid var(--yellow); border-right:2px solid var(--yellow); transform:rotate(45deg); }
+.process__step:nth-child(-n+2):after,.process__step:nth-child(-n+2):before { display:none; }
 .process__step>p { max-width:340px; }
 .cost>img { object-position:center center; }
-@media (max-width:800px) { .process__track { gap:34px; }.process__step { display:block; text-align:left; }.process__step:nth-child(-n+2):before { display:none; }.cost>img { object-position:62% center; } }
+@media (max-width:800px) { .process__track { gap:34px; }.process__track:before { left:46px; right:auto; top:54px; bottom:50px; width:1px; height:auto; background:linear-gradient(180deg,var(--yellow),rgba(246,185,0,.18)); }.process__step { display:block; padding-left:120px; text-align:left; }.cost>img { object-position:62% center; } }
