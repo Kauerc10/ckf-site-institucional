@@ -10,6 +10,8 @@ const app = readFileSync(path.join(root, 'src', 'App.jsx'), 'utf8')
 const dialog = readFileSync(path.join(root, 'src', 'TicketRequestDialog.jsx'), 'utf8')
 const ticketCss = readFileSync(path.join(root, 'src', 'ticket-request.css'), 'utf8')
 const styles = readFileSync(path.join(root, 'src', 'styles.css'), 'utf8')
+const polishCss = readFileSync(path.join(root, 'src', 'experience-polish.css'), 'utf8')
+const homeCss = `${styles}\n${polishCss}`
 const mobileCss = readFileSync(path.join(root, 'public', 'mobile-a11y.css'), 'utf8')
 const serviceHtml = readFileSync(path.join(root, 'dist', 'client', 'servicos', 'reforma-chassis', 'index.html'), 'utf8')
 const vercel = JSON.parse(readFileSync(path.join(root, 'vercel.json'), 'utf8'))
@@ -138,6 +140,7 @@ test('primeiro passo do processo abre a Solicitação integrada', () => {
 })
 
 test('faixa da equipe mantém composição centralizada em telas largas', () => {
-  assert.match(styles, /\.trust__layout\s*\{[^}]*max-width:\s*1440px;/s)
-  assert.match(styles, /\.trust__media img\s*\{[^}]*object-fit:\s*contain;/s)
+  assert.match(app, /import '\.\/experience-polish\.css'/)
+  assert.match(homeCss, /\.trust__layout\s*\{[^}]*max-width:\s*1440px;/s)
+  assert.match(homeCss, /\.trust__media img\s*\{[^}]*object-fit:\s*contain;/s)
 })
