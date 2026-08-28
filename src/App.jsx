@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import {
-  FaArrowRight, FaBuilding, FaComments, FaIndustry, FaLocationDot, FaMapLocationDot,
+  FaArrowRight, FaBuilding, FaCheck, FaComments, FaIndustry, FaLocationDot, FaMapLocationDot,
   FaMagnifyingGlass, FaScrewdriverWrench, FaTruck, FaWhatsapp, FaWrench,
 } from 'react-icons/fa6'
 import './styles.css'
+import './experience-polish.css'
 import './legal-footer.css'
 import { SERVICE_PAGES } from '../service-pages.mjs'
 import { trackEvent } from './analytics.js'
@@ -32,7 +33,13 @@ const serviceTable = [
   ['Pintura e acabamento', 'Proteção e renovação para prolongar a vida útil.'],
 ]
 const audiences = [[FaTruck,'Gestores de frota'],[FaIndustry,'Centrais de concreto'],[FaBuilding,'Construtoras'],[FaWrench,'Donos de caminhões e máquinas pesadas']]
-const process = [[FaComments,'01','Entendimento rápido','Você nos conta o problema. Perguntamos o essencial para entender o cenário.'],[FaMagnifyingGlass,'02','Diagnóstico e plano','Avaliamos, explicamos as opções e deixamos o orçamento claro.'],[FaScrewdriverWrench,'03','Execução e entrega','Mão de obra especializada e teste final para a operação voltar com segurança.']]
+const process = [
+  [FaComments,'01','Solicitação do atendimento','Conte o essencial em poucos passos. A solicitação é registrada e chega estruturada para nossa equipe.',true],
+  [FaMagnifyingGlass,'02','Análise e diagnóstico','A equipe avalia o cenário, confirma os detalhes necessários e define a melhor abordagem.'],
+  [FaArrowRight,'03','Orçamento e alinhamento','Escopo, serviço e condições são apresentados com clareza. Qualquer ajuste é combinado antes de seguir.'],
+  [FaScrewdriverWrench,'04','Execução acompanhada','Com tudo alinhado, a equipe executa o serviço com responsabilidade técnica e comunicação direta.'],
+  [FaCheck,'05','Teste e entrega','O equipamento é validado antes da entrega, com foco em segurança e retorno confiável à operação.'],
+]
 
 function MobileMenu() {
   const detailsRef = useRef(null)
@@ -44,6 +51,7 @@ function MobileMenu() {
 
 export function App() {
   const [ticketDialog, setTicketDialog] = useState({ open:false, source:'', serviceSlug:'' })
+  const processRef = useRef(null)
   function openTicket(source, serviceSlug = '') { setTicketDialog({ open:true, source, serviceSlug }) }
 
   useEffect(() => {
@@ -52,6 +60,23 @@ export function App() {
       knownServiceSlugs: serviceSlugs,
     })
     if (intent.shouldOpen) openTicket(intent.source, intent.serviceSlug)
+  }, [])
+
+  useEffect(() => {
+    const section = processRef.current
+    if (!section) return undefined
+    const Observer = globalThis.IntersectionObserver
+    if (!Observer) {
+      section.classList.add('is-visible')
+      return undefined
+    }
+    const observer = new Observer(([entry]) => {
+      if (!entry.isIntersecting) return
+      section.classList.add('is-visible')
+      observer.disconnect()
+    }, { threshold:0.2 })
+    observer.observe(section)
+    return () => observer.disconnect()
   }, [])
 
   return <main>
@@ -63,10 +88,47 @@ export function App() {
     <section className="services section-shell" id="servicos"><div className="services__intro"><p className="eyebrow">Para cada desafio</p><h2>Soluções que sustentam a operação.</h2><p>Diagnóstico, execução e responsabilidade técnica para o trabalho seguir no ritmo certo.</p></div><div className="service-grid">{serviceHighlights.map((service,index) => <a className="service-card" key={service.slug} href={service.href} aria-label={`Conhecer ${service.cardTitle}`} data-cta-source="service-highlight" data-cta-service={service.cardTitle} data-service-slug={service.slug} onClick={() => trackEvent('service_view', { page:pagePath(), serviceSlug:service.slug, ctaSource:'service-highlight' })}><img src={service.image} alt="" loading="lazy" /><span className="service-card__number">0{index+1}</span><h3>{service.cardTitle}</h3></a>)}</div></section>
     <section className="service-list" aria-labelledby="service-list-title"><div className="section-shell service-list__layout"><div><p className="eyebrow">Manutenção geral</p><h2 id="service-list-title">O essencial para sua operação seguir.</h2><p>Serviços objetivos, atendimento direto e orçamento pelo WhatsApp.</p></div><div className="service-table-wrap"><table><thead><tr><th scope="col">Serviço</th><th scope="col">Como ajudamos</th><th aria-label="Solicitar orçamento" /></tr></thead><tbody>{serviceTable.map(([service,description]) => <tr key={service}><th scope="row">{service}</th><td>{description}</td><td><a href={buildWhatsAppUrl({service})} target="_blank" rel="noreferrer" aria-label={`Falar sobre ${service} no WhatsApp`} data-cta-source="service-table" data-cta-service={service} onClick={() => trackWhatsApp('service-table')}><FaArrowRight aria-hidden="true" /></a></td></tr>)}</tbody></table><a className="text-link" href={WHATSAPP} target="_blank" rel="noreferrer" data-cta-source="service-list" onClick={() => trackWhatsApp('service-list')}><FaWhatsapp /> Falar sobre um serviço <FaArrowRight aria-hidden="true" /></a></div></div></section>
     <section className="capability" id="capacidade"><div className="section-shell"><div className="capability__heading"><div><p className="eyebrow">Estrutura em campo</p><h2>Capacidade para ir além do reparo.</h2></div><p>Do galpão à obra, a CKF entra com solução técnica, mão de obra e responsabilidade pela entrega.</p></div><div className="capability__gallery">{capabilityGallery.map(([title,text,image]) => <article className="capability__card" key={title}><img src={image} alt="" loading="lazy" /><div><h3>{title}</h3><p>{text}</p></div></article>)}</div></div></section>
-    <section className="about" id="sobre"><div className="section-shell about__layout"><div className="about__copy"><p className="eyebrow">Quem somos</p><h2>Trabalho de verdade. Decisão técnica em cada entrega.</h2><p>A CKF nasceu para atender operações que não podem esperar. Nossa equipe soma experiência de campo, estrutura e atenção ao detalhe para entregar manutenção pesada com segurança.</p><p className="about__signature">Sócios fundadores · CKF Manutenção</p></div><div className="about__portraits" aria-label="Sócios fundadores da CKF Manutenção"><img className="about__portrait about__portrait--left" src="/assets/fundador-ckf-capacete.webp" alt="Sócio fundador da CKF Manutenção" loading="lazy" /><img className="about__portrait about__portrait--right" src="/assets/socio-ckf-capacete.webp" alt="Sócio fundador da CKF Manutenção" loading="lazy" /></div></div></section>
+
+    <section className="about" id="sobre">
+      <div className="section-shell about__layout">
+        <div className="about__copy">
+          <p className="eyebrow">Quem somos</p>
+          <h2>Trabalho de verdade. Parceria que mantém sua operação em movimento.</h2>
+          <p>A CKF trabalha lado a lado com quem depende da operação funcionando. Da primeira conversa à entrega, nossa equipe combina experiência de campo, diagnóstico claro e execução responsável para encontrar a solução certa, sem enrolação.</p>
+          <div className="about__commitments" aria-label="Compromissos da CKF"><span>Atendimento direto</span><span>Diagnóstico transparente</span><span>Compromisso com a entrega</span></div>
+          <p className="about__signature">Sócios fundadores · CKF Manutenção</p>
+        </div>
+        <div className="about__portraits" aria-label="Sócios fundadores da CKF Manutenção">
+          <figure className="about__founder about__founder--left">
+            <img className="about__portrait about__portrait--left" src="/assets/fundador-ckf-capacete.webp" alt="Cleber, sócio fundador da CKF Manutenção" loading="lazy" />
+            <figcaption><strong>Cleber</strong><span>Sócio fundador</span></figcaption>
+          </figure>
+          <figure className="about__founder about__founder--right">
+            <img className="about__portrait about__portrait--right" src="/assets/socio-ckf-capacete.webp" alt="Roberto, sócio fundador da CKF Manutenção" loading="lazy" />
+            <figcaption><strong>Roberto</strong><span>Sócio fundador</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
     <section className="cost"><img src="/assets/real/caminhao-betoneira-editorial.webp" alt="Caminhão betoneira em manutenção dentro da oficina da CKF" loading="lazy" /><div className="section-shell cost__copy"><p className="eyebrow">O custo da parada</p><h2>Quando a operação para, <em>o custo cresce.</em></h2><p>Produção perdida, prazo pressionado e equipe parada. Manutenção bem conduzida reduz incerteza e devolve previsibilidade ao seu trabalho.</p></div></section>
-    <section className="process" id="processo"><div className="section-shell"><p className="eyebrow">Nosso processo</p><h2>Da primeira conversa ao retorno da operação.</h2><div className="process__track">{process.map(([Icon,number,title,text]) => <article className="process__step" key={number}><div className="process__icon"><Icon aria-hidden="true" /></div><span className="process__number">{number}</span><h3>{title}</h3><p>{text}</p></article>)}</div></div></section>
-    <section className="trust"><div className="trust__layout"><div className="trust__copy"><p className="eyebrow">Trabalho que sustenta</p><h2>Gente que resolve.<br />Do jeito certo.</h2><p>Equipe especializada, trabalho de verdade e foco total no que importa: sua operação funcionando com segurança.</p></div><figure className="trust__media"><img src="/assets/equipe-ckf-editorial.webp" alt="Equipe da CKF Manutenção reunida em frente a caminhão betoneira" loading="lazy" /></figure></div></section>
+
+    <section className="process" id="processo" ref={processRef}>
+      <div className="section-shell">
+        <div className="process__heading"><p className="eyebrow">Nosso processo</p><h2>Do primeiro contato à operação de volta.</h2><p>Você sabe o que está acontecendo em cada etapa. A CKF organiza o atendimento, alinha o serviço e mantém a comunicação direta até a entrega.</p></div>
+        <div className="process__track">
+          {process.map(([Icon,number,title,text,hasAction],index) => <article className="process__step" key={number} style={{ '--step-index': index }}>
+            <div className="process__icon"><Icon aria-hidden="true" /></div>
+            <span className="process__number">{number}</span>
+            <h3>{title}</h3>
+            <p>{text}</p>
+            {hasAction && <button className="process__cta" type="button" data-ticket-trigger="process" onClick={() => openTicket('process')}>Abrir solicitação <FaArrowRight aria-hidden="true" /></button>}
+          </article>)}
+        </div>
+      </div>
+    </section>
+
+    <section className="trust"><div className="trust__layout"><div className="trust__copy"><p className="eyebrow">Trabalho que sustenta</p><h2>Gente que resolve.<br />Do jeito certo.</h2><p>Equipe especializada, comunicação direta e foco total no que importa: sua operação funcionando com segurança.</p></div><figure className="trust__media"><img src="/assets/equipe-ckf-editorial.webp" alt="Equipe da CKF Manutenção reunida em frente a caminhão betoneira" loading="lazy" /></figure></div></section>
     <section className="location" id="localizacao"><div className="section-shell location__card"><img src="/assets/real/fachada-ckf-editorial.jpg" alt="Fachada da unidade da CKF Manutenção com caminhão betoneira em atendimento" loading="lazy" /><div className="location__copy"><p className="eyebrow">Nossa unidade</p><h2>Venha conversar com a equipe.</h2><address><FaLocationDot aria-hidden="true" /><span>Rodovia BR-101, 6780<br />Galpão 01, Sala 01 · Espinheiros<br />Itajaí · SC · 88317-000</span></address><a className="button" href={MAPS} target="_blank" rel="noreferrer"><FaMapLocationDot /> Abrir rota no Maps</a></div></div></section>
     <section className="contact" id="contato"><div className="section-shell contact__wrap"><div><FaWhatsapp className="contact__icon" aria-hidden="true" /><div><h2>Sua operação não pode esperar.</h2><p>Registre o cenário em poucos passos e continue o atendimento com a equipe pelo WhatsApp.</p></div></div><button className="button" type="button" data-ticket-trigger="contact" onClick={() => openTicket('contact')}>Pedir orçamento <FaArrowRight aria-hidden="true" /></button></div></section>
     <footer>
