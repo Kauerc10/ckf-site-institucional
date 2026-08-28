@@ -139,8 +139,9 @@ test('primeiro passo do processo abre a Solicitação integrada', () => {
   assert.match(app, /openTicket\('process'\)/)
 })
 
-test('faixa da equipe mantém composição centralizada em telas largas', () => {
+test('faixa da equipe volta ao retângulo full-width sem perder a imagem inteira', () => {
   assert.match(app, /import '\.\/experience-polish\.css'/)
-  assert.match(homeCss, /\.trust__layout\s*\{[^}]*max-width:\s*1440px;/s)
+  assert.match(polishCss, /\.trust\s*\{[^}]*padding:\s*0;/s)
+  assert.match(polishCss, /\.trust__layout\s*\{[^}]*width:\s*100%;[^}]*max-width:\s*none;[^}]*border:\s*0;/s)
   assert.match(homeCss, /\.trust__media img\s*\{[^}]*object-fit:\s*contain;/s)
 })
