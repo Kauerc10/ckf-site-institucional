@@ -22,6 +22,7 @@ const allowedEvents = new Set([
   'ticket_error',
   'ticket_close',
   'whatsapp_click',
+  'maps_directions_click',
 ])
 
 test('analytics remove PII e aceita apenas contexto operacional', () => {
@@ -57,6 +58,7 @@ test('instrumentação usa somente eventos do funil aprovado', () => {
   assert.match(dialog, /ticket_error/)
   assert.match(dialog, /ticket_close/)
   assert.match(app, /whatsapp_click/)
+  assert.match(app, /maps_directions_click/)
 })
 
 test('analytics nunca envia campos pessoais conhecidos', () => {
