@@ -59,7 +59,7 @@
   transition:transform .3s ease, background .3s ease;
 }
 .about__founder--left figcaption { left:24px; }
-.about__founder--right figcaption { right:12px; text-align:right; }
+.about__founder--right figcaption { left:45%; right:auto; text-align:left; }
 .about__founder:hover figcaption { transform:translateY(-5px); background:rgba(13,18,19,.98); }
 .about__founder figcaption strong { display:block; color:var(--paper); font:800 25px/.95 'Barlow Condensed',sans-serif; letter-spacing:.01em; text-transform:uppercase; }
 .about__founder figcaption span { display:block; margin-top:4px; color:var(--yellow); font:700 12px/1 'Barlow Condensed',sans-serif; letter-spacing:.07em; text-transform:uppercase; }
@@ -210,7 +210,7 @@
   .about__founder--right { right:-13%; width:73%; }
   .about__founder figcaption { bottom:18px; min-width:126px; padding:9px 11px; }
   .about__founder--left figcaption { left:clamp(86px,14vw,112px); }
-  .about__founder--right figcaption { right:clamp(90px,14.5vw,116px); }
+  .about__founder--right figcaption { left:32%; right:auto; }
   .about__founder figcaption strong { font-size:21px; }
 
   .process { padding:74px 0; }
@@ -254,7 +254,7 @@
   .about__founder--right { right:-19%; width:80%; }
   .about__founder figcaption { bottom:12px; min-width:112px; }
   .about__founder--left figcaption { left:clamp(104px,22vw,118px); }
-  .about__founder--right figcaption { right:clamp(108px,23vw,122px); }
+  .about__founder--right figcaption { left:30%; right:auto; }
   .about__founder figcaption strong { font-size:19px; }
   .about__founder figcaption span { font-size:10px; }
 }
