@@ -6,7 +6,7 @@
 
 **Architecture:** A home continuará com uma única constante de destino em `src/App.jsx`, mas ela passará a usar o link universal compartilhado da ficha oficial da CKF (`maps.app.goo.gl`). O CTA continuará abrindo em nova aba e registrará um evento pelo analytics já existente, sem detecção de plataforma, Place ID separado, novas dependências ou deep links proprietários.
 
-**Tech Stack:** React 19, Vite 6, Node.js 24.x, Node test runner, analytics próprio da CKF, Vercel.
+**Tech Stack:** React 19.2.8, Vite 8.2.2, Node.js 24.x, Node test runner, analytics próprio da CKF, Vercel.
 
 **Spec:** `docs/superpowers/specs/2026-08-29-ckf-exact-maps-link-design.md`
 
@@ -20,7 +20,7 @@
 - Manter `target="_blank"` e `rel="noreferrer"` no link externo.
 - Registrar `maps_directions_click` com `page` e `ctaSource:'location'` usando o analytics existente.
 - Toda mudança de comportamento deve seguir RED → GREEN.
-- Antes do merge, executar `npm run check:deploy` e validar o preview em desktop e mobile.
+- Antes do merge, executar `npm run check:deploy`, `npm run security:audit` e validar o preview em desktop e mobile.
 
 ---
 
@@ -52,7 +52,10 @@ test('CTA de localização abre a CKF em nova aba e registra o clique', () => {
   assert.match(locationLink, /onClick=\{trackMapsDirections\}/)
   assert.match(locationLink, /Como chegar à CKF/)
 
-  assert.match(app, /const trackMapsDirections = \(\) => trackEvent\('maps_directions_click', \{ page: pagePath\(\), ctaSource:'location' \}\)/)
+  assert.match(
+    app,
+    /const trackMapsDirections = \(\) => trackEvent\('maps_directions_click', \{[\s\S]*?page:\s*pagePath\(\),[\s\S]*?ctaSource:\s*'location',[\s\S]*?\}\)/,
+  )
 })
 ```
 
@@ -64,7 +67,7 @@ Run:
 npm run build && node --test tests/conversion-ux.test.mjs
 ```
 
-Expected: FAIL apenas nos novos contratos porque `MAPS` ainda usa `/maps/search/?api=1&query=...`, não existe `trackMapsDirections` e o CTA ainda diz `Abrir rota no Maps`.
+Expected: FAIL nos contratos novos porque `MAPS` ainda usa `/maps/search/?api=1&query=...`, não existe `trackMapsDirections` e o CTA ainda diz `Abrir rota no Maps`.
 
 - [ ] **Step 3: Confirm failures are behavior-specific**
 
@@ -153,17 +156,17 @@ Run:
 npm run check:deploy
 ```
 
-Expected: PASS no build, testes do worker e validações da Vercel.
+Expected: PASS no build, testes unitários, worker e validações da Vercel.
 
 - [ ] **Step 6: Run security validation**
 
-Se o script existir no `package.json`, run:
+Run:
 
 ```bash
 npm run security:audit
 ```
 
-Expected: PASS. Se o script não existir, registrar explicitamente no PR que `npm run check:deploy` foi o gate de segurança/configuração disponível para esta mudança.
+Expected: PASS sem vulnerabilidades `high` ou superiores.
 
 - [ ] **Step 7: Commit GREEN**
 
@@ -186,7 +189,7 @@ git commit -m "fix: abre localização exata da CKF no Maps"
 
 - [ ] **Step 1: Open the location section in the preview**
 
-Navegar até `#localizacao` e confirmar visualmente:
+Navegar até `#localizacao` e confirmar visualmente o CTA:
 
 ```text
 Como chegar à CKF
@@ -200,47 +203,27 @@ Galpão 01, Sala 01 · Espinheiros
 Itajaí · SC · 88317-000
 ```
 
-- [ ] **Step 2: Desktop validation**
+- [ ] **Step 2: Validate desktop navigation**
 
-Em Chrome ou navegador equivalente no desktop:
+Em Chrome ou navegador equivalente no desktop, clicar no CTA e confirmar abertura em nova aba com destino **CKF Manutenção**, sem `Resultados parciais` baseados apenas em `BR-101, 6780`.
 
-1. clicar em `Como chegar à CKF`;
-2. confirmar abertura em nova aba;
-3. confirmar que o destino resolvido é **CKF Manutenção**;
-4. confirmar que a experiência não cai em uma página de `Resultados parciais` baseada apenas em `BR-101, 6780`.
+- [ ] **Step 3: Validate Android navigation**
 
-- [ ] **Step 3: Android validation**
+No Chrome para Android, tocar no CTA e confirmar que o destino final é **CKF Manutenção**. Aceitar o handoff para Google Maps se o sistema oferecer; se permanecer no navegador, confirmar que o Maps Web resolve a mesma ficha.
 
-Em Android:
+- [ ] **Step 4: Validate iPhone / iOS navigation**
 
-1. abrir o preview no Chrome;
-2. tocar em `Como chegar à CKF`;
-3. aceitar o handoff para Google Maps se o sistema oferecer;
-4. confirmar que o destino exibido é **CKF Manutenção**;
-5. se o handoff não acontecer, confirmar que o Maps Web continua resolvendo a ficha correta.
-
-O critério é o destino correto; não forçar o app nativo.
-
-- [ ] **Step 4: iPhone / iOS validation**
-
-Em Safari no iPhone:
-
-1. tocar em `Como chegar à CKF`;
-2. confirmar que o link resolve a ficha **CKF Manutenção**;
-3. se o Google Maps estiver instalado e o iOS abrir o app, confirmar o mesmo destino;
-4. se permanecer no navegador, confirmar que o Google Maps Web continua funcional.
-
-Não considerar falha o iOS optar pelo navegador. Falha é cair em busca genérica ou em outro estabelecimento.
+No Safari para iPhone, tocar no CTA e confirmar que o destino final é **CKF Manutenção**. Se o iOS abrir o Google Maps instalado, validar a ficha; se mantiver o link no navegador, validar o Google Maps Web. Não exigir abertura forçada do app nativo.
 
 - [ ] **Step 5: Verify analytics dispatch**
 
-No preview desktop, abrir DevTools e registrar temporariamente um listener no console:
+No preview desktop, registrar temporariamente este listener no console:
 
 ```js
 window.addEventListener('ckf:analytics', (event) => console.log(event.detail))
 ```
 
-Clicar em `Como chegar à CKF` e confirmar uma emissão equivalente a:
+Clicar no CTA e confirmar uma emissão equivalente a:
 
 ```js
 {
@@ -252,25 +235,26 @@ Clicar em `Como chegar à CKF` e confirmar uma emissão equivalente a:
 }
 ```
 
-- [ ] **Step 6: Final regression gate**
+- [ ] **Step 6: Run final regression gates on the implementation HEAD**
 
-Run novamente na HEAD que será enviada para revisão:
+Run:
 
 ```bash
 npm run check:deploy
+npm run security:audit
 ```
 
-Expected: PASS.
+Expected: ambos PASS.
 
 - [ ] **Step 7: Open the implementation PR**
 
-Título sugerido:
+Título:
 
 ```text
 fix: abre localização exata da CKF no Maps
 ```
 
-Descrição sugerida:
+Descrição:
 
 ```md
 ## Objetivo
@@ -287,6 +271,7 @@ Fazer o CTA de localização abrir a ficha correta da CKF no Google Maps, evitan
 ## Validação
 
 - [x] Executei `npm run check:deploy`
+- [x] Executei `npm run security:audit`
 - [x] Validei o destino no preview em desktop e mobile
 - [x] Confirmei que o link resolve “CKF Manutenção” e não uma busca parcial pelo endereço
 - [x] Não incluí credenciais, dados pessoais ou dependências novas
@@ -298,9 +283,4 @@ O impacto visual é mínimo, limitado ao texto do CTA de localização. Operacio
 
 - [ ] **Step 8: Merge gate**
 
-Fazer merge apenas quando:
-
-- CI estiver verde;
-- verificações de segurança/configuração estiverem verdes;
-- preview estiver publicado;
-- desktop, Android e iPhone/iOS tiverem sido conferidos conforme os critérios acima.
+Fazer merge apenas quando CI, segurança/configuração e preview estiverem verdes e a navegação tiver sido conferida em desktop, Android e iPhone/iOS conforme os critérios acima.
