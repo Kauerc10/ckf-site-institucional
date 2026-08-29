@@ -145,3 +145,9 @@ test('faixa da equipe volta ao retângulo full-width sem perder a imagem inteira
   assert.match(polishCss, /\.trust__layout\s*\{[^}]*width:\s*100%;[^}]*max-width:\s*none;[^}]*border:\s*0;/s)
   assert.match(homeCss, /\.trust__media img\s*\{[^}]*object-fit:\s*contain;/s)
 })
+
+test('card do Roberto usa leitura à esquerda e margem segura em desktop e mobile', () => {
+  assert.match(polishCss, /\.about__founder--right figcaption\s*\{[^}]*left:\s*45%;[^}]*right:\s*auto;[^}]*text-align:\s*left;/s)
+  assert.match(polishCss, /@media \(max-width:800px\)[\s\S]*?\.about__founder--right figcaption\s*\{[^}]*left:\s*32%;[^}]*right:\s*auto;/s)
+  assert.match(polishCss, /@media \(max-width:520px\)[\s\S]*?\.about__founder--right figcaption\s*\{[^}]*left:\s*30%;[^}]*right:\s*auto;/s)
+})
