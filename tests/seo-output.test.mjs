@@ -15,6 +15,8 @@ test('publica canonical, Open Graph e dados estruturados com URL absoluta', () =
   assert.ok(html.includes(`${siteUrl}/assets/solda-ckf.webp`))
   assert.match(html, /"@type":\["LocalBusiness","Organization"\]/)
   assert.match(html, /"addressLocality":"Itajaí"/)
+  assert.match(html, /<h1>Sua operação<br \/>precisa continuar\.<\/h1>/)
+  assert.doesNotMatch(html, /<div id="root"><\/div>/)
 })
 
 test('publica robots.txt apontando para o sitemap', () => {
@@ -29,4 +31,13 @@ test('gera sitemap.xml com a home canônica', () => {
   assert.equal(existsSync(sitemapPath), true, 'sitemap.xml deve ser gerado no build')
   const sitemap = readFileSync(sitemapPath, 'utf8')
   assert.ok(sitemap.includes(`<loc>${siteUrl}</loc>`))
+})
+
+test('publica um resumo legível por agentes sem inventar preços', () => {
+  const llmsPath = path.join(distClient, 'llms.txt')
+  assert.equal(existsSync(llmsPath), true, 'llms.txt deve existir no artefato final')
+  const llms = readFileSync(llmsPath, 'utf8')
+  assert.match(llms, /# CKF Manutenção/)
+  assert.match(llms, /\[Serviços\]\(https:\/\/ckfmanutencao\.com\.br\/servicos\)/)
+  assert.doesNotMatch(llms, /Preço:/)
 })

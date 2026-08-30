@@ -117,6 +117,31 @@ function renderFooter({ whatsapp = buildWhatsAppUrl() } = {}) {
   return `<footer><div class="footer__inner section-shell"><div><img src="/assets/logo-ckf.png" alt="CKF Manutenção" /><p>Manutenção pesada, recuperação e estruturas para operações que precisam continuar.</p></div><div><h3>WhatsApp rápido</h3><a href="${whatsapp}" target="_blank" rel="noreferrer">${CONTACTS.primary.label}</a><p>Para contato direto sem formulário.</p></div><div><h3>Unidade</h3><p>Rodovia BR-101, 6780<br />Galpão 01, Sala 01 · Espinheiros<br />Itajaí · SC · 88317-000</p></div></div></footer>`
 }
 
+function renderHomeSeoSnapshot() {
+  const ticketHref = '/?cta=home-static'
+  const featuredServices = SERVICE_PAGES
+    .filter((page) => page.featured)
+    .map((page, index) => `<a class="service-card" href="${page.href}"><img src="${page.image}" alt="" loading="lazy" /><span class="service-card__number">0${index + 1}</span><h3>${escapeHtml(page.cardTitle)}</h3></a>`)
+    .join('')
+  const generalServices = SERVICE_PAGES
+    .map((page) => `<li><a href="${page.href}">${escapeHtml(page.cardTitle)}</a></li>`)
+    .join('')
+
+  return `<main>
+    <a class="skip-link" href="#inicio">Pular para o conteúdo</a>
+    ${renderTopbar({ ctaHref: buildWhatsAppUrl(), ctaLabel: 'WhatsApp', external: true })}
+    <section class="hero" id="inicio"><img src="/assets/solda-ckf.webp" alt="Profissional da CKF realizando solda em chassi de caminhão" fetchpriority="high" /><span class="hero__weld-glow" aria-hidden="true"></span><div class="hero__content"><p class="eyebrow">CKF Manutenção</p><h1>Sua operação<br />precisa continuar.</h1><p>Manutenção pesada para quem mede resultado em operação, prazo e segurança.</p><a class="button" href="${ticketHref}">Solicitar orçamento</a></div></section>
+    <section class="services section-shell" id="servicos"><div class="services__intro"><p class="eyebrow">Para cada desafio</p><h2>Soluções que sustentam a operação.</h2><p>Diagnóstico, execução e responsabilidade técnica para o trabalho seguir no ritmo certo.</p></div><div class="service-grid">${featuredServices}</div></section>
+    <section class="service-list" aria-labelledby="home-service-list-title"><div class="section-shell service-list__layout"><div><p class="eyebrow">Manutenção geral</p><h2 id="home-service-list-title">O essencial para sua operação seguir.</h2><p>Serviços objetivos, atendimento direto e orçamento pelo WhatsApp.</p></div><div><ul class="service-page__related-list">${generalServices}</ul></div></div></section>
+    <section class="capability" id="capacidade"><div class="section-shell"><p class="eyebrow">Estrutura em campo</p><h2>Capacidade para ir além do reparo.</h2><p>Do galpão à obra, a CKF entra com solução técnica, mão de obra e responsabilidade pela entrega.</p></div></section>
+    <section class="about" id="sobre"><div class="section-shell about__copy"><p class="eyebrow">Quem somos</p><h2>Trabalho de verdade. Decisão técnica em cada entrega.</h2><p>A CKF nasceu para atender operações que não podem esperar. Nossa equipe soma experiência de campo, estrutura e atenção ao detalhe para entregar manutenção pesada com segurança.</p></div></section>
+    <section class="process" id="processo"><div class="section-shell"><p class="eyebrow">Nosso processo</p><h2>Da primeira conversa ao retorno da operação.</h2><p>Você conta o problema, a equipe avalia o cenário e direciona a execução para devolver a operação com segurança.</p></div></section>
+    <section class="location" id="localizacao"><div class="section-shell location__card"><div class="location__copy"><p class="eyebrow">Nossa unidade</p><h2>Venha conversar com a equipe.</h2><address>Rodovia BR-101, 6780<br />Galpão 01, Sala 01 · Espinheiros<br />Itajaí · SC · 88317-000</address><a class="button" href="https://www.google.com/maps/search/?api=1&amp;query=Rodovia%20BR-101%2C%206780%2C%20Galp%C3%A3o%2001%20Sala%2001%2C%20Espinheiros%2C%20Itaja%C3%AD%20-%20SC%2C%2088317-000" target="_blank" rel="noreferrer">Abrir rota no Maps</a></div></div></section>
+    <section class="contact" id="contato"><div class="section-shell contact__wrap"><div><div><h2>Sua operação não pode esperar.</h2><p>Registre o cenário em poucos passos e continue o atendimento com a equipe pelo WhatsApp.</p></div></div><a class="button" href="${ticketHref}">Pedir orçamento</a></div></section>
+    ${renderFooter()}
+  </main>`
+}
+
 function renderServicePage(page) {
   const canonical = `${siteUrl}${page.href}`
   const whatsapp = buildWhatsAppUrl({ service: page.ctaService })
@@ -170,9 +195,12 @@ function renderPrivacyPage() {
   return `<!doctype html><html lang="pt-BR"><head>${baseHead({title:'Política de Privacidade | CKF Manutenção',description:'Saiba como a CKF Manutenção utiliza os dados enviados pelo site para responder Solicitações, preparar atendimento e orçamento.',canonical,structuredData:[schema]})}</head><body class="service-page"><main>${renderTopbar({ ctaHref: ticketHref, ctaLabel: 'Solicitar orçamento' })}<article class="section-shell service-page__legal"><p class="eyebrow">Privacidade</p><h1>Política de Privacidade</h1><p>Esta política explica como a CKF Manutenção trata as informações enviadas pelo site quando você registra uma Solicitação ou entra em contato pelo WhatsApp.</p><h2>Quais dados podemos receber</h2><p>Nome, telefone, e-mail opcional, empresa opcional, cidade e UF, tipo de equipamento, marca e modelo opcionais, descrição do problema, urgência e informações técnicas de origem da visita, como página acessada e parâmetros de campanha.</p><h2>Para que usamos esses dados</h2><p>Usamos as informações para identificar sua Solicitação, responder ao contato, entender o serviço necessário, organizar o atendimento e preparar orçamento quando aplicável. Não exigimos consentimento de marketing para solicitar atendimento.</p><h2>WhatsApp e serviços de infraestrutura</h2><p>Ao continuar o atendimento pelo WhatsApp, a conversa também fica sujeita às práticas da plataforma utilizada. O site utiliza infraestrutura de hospedagem e banco de dados para registrar e proteger as Solicitações.</p><h2>Segurança e minimização</h2><p>Coletamos apenas dados úteis ao atendimento. O identificador de rede usado para proteção contra abuso é transformado em digest criptográfico antes de ser armazenado, e o site não recebe acesso direto às tabelas internas da CKF.</p><h2>Retenção e direitos</h2><p>As informações são mantidas pelo período necessário às finalidades de atendimento, orçamento, relacionamento comercial e obrigações aplicáveis. Você pode solicitar acesso, correção ou eliminação quando cabível entrando em contato com a CKF pelos canais informados no site.</p><h2>Contato</h2><p>Para dúvidas sobre privacidade ou sobre uma Solicitação, fale com a CKF Manutenção pelo WhatsApp disponível neste site.</p><p><small>Última atualização: 25 de agosto de 2026.</small></p></article>${renderFooter()}</main></body></html>`
 }
 
-const publicIndexHtml = builtHtml.replaceAll('__CKF_SITE_URL__', siteUrl)
+const publicIndexHtml = builtHtml
+  .replaceAll('__CKF_SITE_URL__', siteUrl)
+  .replace('<div id="root"></div>', `<div id="root">${renderHomeSeoSnapshot()}</div>`)
 writeFileSync(index, publicIndexHtml)
 writeFileSync(path.join(client, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`)
+writeFileSync(path.join(client, 'llms.txt'), `# CKF Manutenção\n\n> Manutenção pesada e industrial em Itajaí, Santa Catarina.\n\nA CKF atende caminhões, máquinas pesadas, centrais de concreto, equipamentos industriais, chassis, hidráulica, solda e estruturas metálicas. Para solicitar atendimento, o visitante registra o cenário e continua a conversa com a equipe pelo WhatsApp.\n\n## Páginas principais\n\n- [Início](${siteUrl}/): visão geral, localização e como solicitar atendimento\n- [Serviços](${siteUrl}/servicos): catálogo de serviços da CKF\n${SERVICE_PAGES.map((page) => `- [${page.cardTitle}](${siteUrl}${page.href}): ${page.description}`).join('\n')}\n- [Política de Privacidade](${siteUrl}/privacidade)\n\n## Dados da empresa\n\n- Nome legal: CKF MANUTENCAO LTDA\n- CNPJ: 57.461.028/0001-43\n- Localização: Rodovia BR-101, 6780, Galpão 01, Sala 01, Espinheiros, Itajaí/SC, 88317-000\n- Telefones: +55 47 99121-4232 e +55 47 99913-0409\n- Área atendida: Itajaí e operações cuja demanda seja compatível com os serviços da CKF\n`)
 
 for (const page of SERVICE_PAGES) {
   const pageDirectory = path.join(client, 'servicos', page.slug)
