@@ -13,11 +13,15 @@ import { readTicketLaunchIntent } from './ticket-request.js'
 import { CONTACTS, buildWhatsAppUrl } from './whatsapp.js'
 
 const WHATSAPP = buildWhatsAppUrl()
-const MAPS = 'https://www.google.com/maps/search/?api=1&query=Rodovia%20BR-101%2C%206780%2C%20Galp%C3%A3o%2001%20Sala%2001%2C%20Espinheiros%2C%20Itaja%C3%AD%20-%20SC%2C%2088317-000'
+const MAPS = 'https://maps.app.goo.gl/WTSkh222vowLHtQi7'
 const serviceHighlights = SERVICE_PAGES.filter((service) => service.featured)
 const serviceSlugs = SERVICE_PAGES.map((service) => service.slug)
 const pagePath = () => globalThis.location?.pathname || '/'
 const trackWhatsApp = (ctaSource, serviceSlug = '') => trackEvent('whatsapp_click', { page: pagePath(), ctaSource, serviceSlug })
+const trackMapsDirections = () => trackEvent('maps_directions_click', {
+  page: pagePath(),
+  ctaSource: 'location',
+})
 
 const capabilityGallery = [
   ['Centrais de concreto', 'Montagem, manutenção e disponibilidade para operações que não param.', '/assets/central-concreto-editorial.webp'],
@@ -128,7 +132,7 @@ export function App() {
     </section>
 
     <section className="trust"><div className="trust__layout"><div className="trust__copy"><p className="eyebrow">Trabalho que sustenta</p><h2>Gente que resolve.<br />Do jeito certo.</h2><p>Equipe especializada, comunicação direta e foco total no que importa: sua operação funcionando com segurança.</p></div><figure className="trust__media"><img src="/assets/equipe-ckf-editorial.webp" alt="Equipe da CKF Manutenção reunida em frente a caminhão betoneira" loading="lazy" /></figure></div></section>
-    <section className="location" id="localizacao"><div className="section-shell location__card"><img src="/assets/real/fachada-ckf-editorial.jpg" alt="Fachada da unidade da CKF Manutenção com caminhão betoneira em atendimento" loading="lazy" /><div className="location__copy"><p className="eyebrow">Nossa unidade</p><h2>Venha conversar com a equipe.</h2><address><FaLocationDot aria-hidden="true" /><span>Rodovia BR-101, 6780<br />Galpão 01, Sala 01 · Espinheiros<br />Itajaí · SC · 88317-000</span></address><a className="button" href={MAPS} target="_blank" rel="noreferrer"><FaMapLocationDot /> Abrir rota no Maps</a></div></div></section>
+    <section className="location" id="localizacao"><div className="section-shell location__card"><img src="/assets/real/fachada-ckf-editorial.jpg" alt="Fachada da unidade da CKF Manutenção com caminhão betoneira em atendimento" loading="lazy" /><div className="location__copy"><p className="eyebrow">Nossa unidade</p><h2>Venha conversar com a equipe.</h2><address><FaLocationDot aria-hidden="true" /><span>Rodovia BR-101, 6780<br />Galpão 01, Sala 01 · Espinheiros<br />Itajaí · SC · 88317-000</span></address><a className="button" href={MAPS} target="_blank" rel="noreferrer" onClick={trackMapsDirections}><FaMapLocationDot aria-hidden="true" /> Como chegar à CKF</a></div></div></section>
     <section className="contact" id="contato"><div className="section-shell contact__wrap"><div><FaWhatsapp className="contact__icon" aria-hidden="true" /><div><h2>Sua operação não pode esperar.</h2><p>Registre o cenário em poucos passos e continue o atendimento com a equipe pelo WhatsApp.</p></div></div><button className="button" type="button" data-ticket-trigger="contact" onClick={() => openTicket('contact')}>Pedir orçamento <FaArrowRight aria-hidden="true" /></button></div></section>
     <footer>
       <div className="footer__inner section-shell"><div><img src="/assets/logo-ckf.png" alt="CKF Manutenção" /><p>Soluções em manutenção geral para caminhões, máquinas, concreto, equipamentos e estruturas.</p></div><div><h3>Fale com a gente</h3><a href={buildWhatsAppUrl()} target="_blank" rel="noreferrer" data-cta-source="footer-primary" data-contact="primary" onClick={() => trackWhatsApp('footer-primary')}><FaWhatsapp /> {CONTACTS.primary.label}</a><a href={buildWhatsAppUrl({contact:'secondary'})} target="_blank" rel="noreferrer" data-cta-source="footer-secondary" data-contact="secondary" onClick={() => trackWhatsApp('footer-secondary')}><FaWhatsapp /> {CONTACTS.secondary.label}</a><p>Atendimento rápido pelo WhatsApp.</p></div><div><h3>Manutenção geral</h3><p>Suspensão · Solda · Preventiva · Freios<br />Hidráulica · Reforma · Pintura · Embreagem</p></div></div>

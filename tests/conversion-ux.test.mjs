@@ -151,3 +151,23 @@ test('card do Roberto usa leitura à esquerda e margem segura em desktop e mobil
   assert.match(polishCss, /@media \(max-width:800px\)[\s\S]*?\.about__founder--right figcaption\s*\{[^}]*left:\s*32%;[^}]*right:\s*auto;/s)
   assert.match(polishCss, /@media \(max-width:520px\)[\s\S]*?\.about__founder--right figcaption\s*\{[^}]*left:\s*30%;[^}]*right:\s*auto;/s)
 })
+
+test('localização usa a ficha exata da CKF em vez de busca textual por endereço', () => {
+  assert.match(app, /const MAPS = 'https:\/\/maps\.app\.goo\.gl\/WTSkh222vowLHtQi7'/)
+  assert.doesNotMatch(app, /google\.com\/maps\/search\/\?api=1&query=/)
+})
+
+test('CTA de localização abre a CKF em nova aba e registra o clique', () => {
+  const locationLink = app.match(/<a className="button" href=\{MAPS\}[\s\S]*?<\/a>/)?.[0] ?? ''
+
+  assert.notEqual(locationLink, '')
+  assert.match(locationLink, /target="_blank"/)
+  assert.match(locationLink, /rel="noreferrer"/)
+  assert.match(locationLink, /onClick=\{trackMapsDirections\}/)
+  assert.match(locationLink, /Como chegar à CKF/)
+
+  assert.match(
+    app,
+    /const trackMapsDirections = \(\) => trackEvent\('maps_directions_click', \{[\s\S]*?page:\s*pagePath\(\),[\s\S]*?ctaSource:\s*'location',[\s\S]*?\}\)/,
+  )
+})
