@@ -40,6 +40,11 @@ test('snapshot estático mantém a narrativa atual da CKF e a jornada de cinco e
   }
 })
 
+test('processo do snapshot nasce visível antes do React assumir a página', () => {
+  const html = readFileSync(path.join(distClient, 'index.html'), 'utf8')
+  assert.match(html, /<section class="process is-visible" id="processo">/)
+})
+
 test('snapshot e dados estruturados apontam apenas para a ficha oficial da CKF no Maps', () => {
   const html = readFileSync(path.join(distClient, 'index.html'), 'utf8')
 
