@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url'
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const distClient = path.join(root, 'dist', 'client')
 const siteUrl = 'https://ckfmanutencao.com.br'
+const mapsUrl = 'https://maps.app.goo.gl/WTSkh222vowLHtQi7'
 
 test('publica canonical, Open Graph e dados estruturados com URL absoluta', () => {
   const html = readFileSync(path.join(distClient, 'index.html'), 'utf8')
@@ -15,8 +16,36 @@ test('publica canonical, Open Graph e dados estruturados com URL absoluta', () =
   assert.ok(html.includes(`${siteUrl}/assets/solda-ckf.webp`))
   assert.match(html, /"@type":\["LocalBusiness","Organization"\]/)
   assert.match(html, /"addressLocality":"Itajaí"/)
+  assert.ok(html.includes(`"hasMap":"${mapsUrl}"`))
   assert.match(html, /<h1>Sua operação<br \/>precisa continuar\.<\/h1>/)
   assert.doesNotMatch(html, /<div id="root"><\/div>/)
+})
+
+test('snapshot estático mantém a narrativa atual da CKF e a jornada de cinco etapas', () => {
+  const html = readFileSync(path.join(distClient, 'index.html'), 'utf8')
+
+  assert.match(html, /Trabalho de verdade\. Parceria que mantém[\s\S]*?sua operação em movimento\./)
+  assert.match(html, /A CKF trabalha lado a lado com quem depende da operação funcionando\./)
+  assert.match(html, /Do primeiro contato à operação de volta\./)
+  assert.match(html, /Você sabe o que está acontecendo em cada etapa\./)
+
+  for (const step of [
+    'Solicitação do atendimento',
+    'Análise e diagnóstico',
+    'Orçamento e alinhamento',
+    'Execução acompanhada',
+    'Teste e entrega',
+  ]) {
+    assert.ok(html.includes(step), `snapshot deve incluir a etapa: ${step}`)
+  }
+})
+
+test('snapshot e dados estruturados apontam apenas para a ficha oficial da CKF no Maps', () => {
+  const html = readFileSync(path.join(distClient, 'index.html'), 'utf8')
+
+  assert.ok(html.includes(mapsUrl))
+  assert.doesNotMatch(html, /google\.com\/maps\/search\/\?api=1(?:&|&amp;)query=/)
+  assert.match(html, /Como chegar à CKF/)
 })
 
 test('publica robots.txt apontando para o sitemap', () => {
