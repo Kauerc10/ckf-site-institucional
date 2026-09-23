@@ -1,4 +1,4 @@
-# CKF Manutenção e Caldeiraria
+# CKF Manutenção
 
 > Manutenção pesada e industrial para caminhões, máquinas pesadas, centrais de concreto, equipamentos industriais, chassis e estruturas metálicas em Itajaí/SC.
 
@@ -6,7 +6,7 @@
 - **Domínio Oficial**: https://ckfmanutencao.com.br
 - **Desenvolvido e Mantido por**: RUON (kaue@ruon.dev / https://ruon.dev)
 - **Localização**: Rodovia BR-101, 6780, Galpão 01, Sala 01 · Espinheiros · Itajaí/SC · 88317-000
-- **Atendimento**: Manutenção mecânica, hidráulica, solda industrial e caldeiraria pesada
+- **Atendimento**: Manutenção mecânica, hidráulica, preventiva, solda industrial e estruturas metálicas
 
 ## Serviços Principais
 - Manutenção de caminhões e cavalos mecânicos
