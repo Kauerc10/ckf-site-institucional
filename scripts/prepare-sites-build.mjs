@@ -43,8 +43,6 @@ function baseHead({ title, description, canonical, image = '/assets/solda-ckf.we
     <meta name="theme-color" content="#090c0d" />
     <meta name="description" content="${escapeHtml(description)}" />
     <meta name="robots" content="index, follow" />
-    <meta name="author" content="RUON" />
-    <meta name="creator" content="RUON" />
     <link rel="canonical" href="${canonical}" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pt_BR" />

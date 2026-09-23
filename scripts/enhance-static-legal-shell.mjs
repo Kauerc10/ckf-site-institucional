@@ -53,6 +53,10 @@ for (const file of files) {
     html = html.replace('</head>', '<script src="https://ruon.dev/badge.js" async></script></head>')
   }
 
+  if (!html.includes('<meta name="author" content="RUON" />')) {
+    html = html.replace('<meta name="robots" content="index, follow" />', '<meta name="robots" content="index, follow" />\n    <meta name="author" content="RUON" />\n    <meta name="creator" content="RUON" />')
+  }
+
   html = html.replaceAll('>WhatsApp rápido</a>', '>WhatsApp</a>')
   html = html.replaceAll(
     '"name":"CKF Manutenção","url":',
