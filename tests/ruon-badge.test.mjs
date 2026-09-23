@@ -21,3 +21,11 @@ test('App.jsx não mantém crédito de estúdio legado no rodapé', () => {
   const appJsx = fs.readFileSync(path.resolve('src/App.jsx'), 'utf8');
   assert.ok(!appJsx.includes('K-Hub'));
 });
+
+test('vercel.json libera https://ruon.dev na diretiva script-src da Content-Security-Policy', () => {
+  const vercelJson = JSON.parse(fs.readFileSync(path.resolve('vercel.json'), 'utf8'));
+  const csp = vercelJson.headers
+    .flatMap((rule) => rule.headers)
+    .find((header) => header.key === 'Content-Security-Policy')?.value ?? '';
+  assert.match(csp, /script-src[^;]*https:\/\/ruon\.dev/);
+});
