@@ -4,7 +4,7 @@
 
 Não abra issue pública para relatar credenciais expostas, vulnerabilidades, dados pessoais, links administrativos ou falhas de configuração de hospedagem.
 
-Envie os detalhes para [kaue.ruon@gmail.com](mailto:kaue.ruon@gmail.com), incluindo impacto, arquivos ou URLs afetados e passos seguros para reproduzir o problema. Não inclua tokens, senhas ou dados de terceiros.
+Envie os detalhes para [kaue@ruon.dev](mailto:kaue@ruon.dev), incluindo impacto, arquivos ou URLs afetados e passos seguros para reproduzir o problema. Não inclua tokens, senhas ou dados de terceiros.
 
 ## Escopo atual
 
