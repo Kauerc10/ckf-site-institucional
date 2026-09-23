@@ -140,7 +140,7 @@ export function App() {
         <nav className="footer__policies" aria-label="Políticas e informações jurídicas"><a href="/privacidade">Política de Privacidade</a><span aria-hidden="true">·</span><a href="/marketing">Política de Comunicações e Marketing</a></nav>
         <p className="footer__company">CKF MANUTENCAO LTDA · CNPJ 57.461.028/0001-43 · Rodovia BR-101, 6780, Galpão 01, Sala 01 · Espinheiros · Itajaí/SC · 88317-000</p>
         <div className="footer__credit">
-          <ruon-badge ref="ckf-site" theme="dark" size="sm"></ruon-badge>
+          <ruon-badge project="ckf-site" theme="dark" size="sm"></ruon-badge>
         </div>
       </div>
 

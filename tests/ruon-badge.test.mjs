@@ -12,7 +12,7 @@ test('index.html inclui carregamento assíncrono do Web Component ruon-badge', (
 test('App.jsx renderiza o custom element ruon-badge no rodapé com referência ckf-site', () => {
   const appJsx = fs.readFileSync(path.resolve('src/App.jsx'), 'utf8');
   assert.ok(appJsx.includes('<ruon-badge'));
-  assert.ok(appJsx.includes('ref="ckf-site"'));
+  assert.ok(appJsx.includes('project="ckf-site"'));
   assert.ok(appJsx.includes('theme="dark"'));
   assert.ok(appJsx.includes('size="sm"'));
 });
