@@ -49,6 +49,10 @@ for (const file of files) {
   if (!html.includes('</footer>')) throw new Error(`Missing footer marker in ${file}`)
   html = html.replace('</footer>', `${legalFooter}</footer>`)
 
+  if (!html.includes('https://ruon.dev/badge.js')) {
+    html = html.replace('</head>', '<script src="https://ruon.dev/badge.js" async></script></head>')
+  }
+
   html = html.replaceAll('>WhatsApp rápido</a>', '>WhatsApp</a>')
   html = html.replaceAll(
     '"name":"CKF Manutenção","url":',
