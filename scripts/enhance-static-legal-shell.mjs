@@ -13,7 +13,9 @@ const whatsapp = buildWhatsAppUrl()
 const legalFooter = `<div class="footer__legal section-shell">
   <nav class="footer__policies" aria-label="Políticas e informações jurídicas"><a href="/privacidade">Política de Privacidade</a><span aria-hidden="true">·</span><a href="/marketing">Política de Comunicações e Marketing</a></nav>
   <p class="footer__company">CKF MANUTENCAO LTDA · CNPJ 57.461.028/0001-43 · Rodovia BR-101, 6780, Galpão 01, Sala 01 · Espinheiros · Itajaí/SC · 88317-000</p>
-  <p class="footer__credit">Idealizado e desenvolvido por <strong>K-Hub</strong></p>
+  <div class="footer__credit">
+    <ruon-badge project="ckf-site" theme="dark" size="sm"></ruon-badge>
+  </div>
 </div>`
 
 const policyTopbar = `<header class="topbar">
@@ -46,6 +48,10 @@ for (const file of files) {
   html = html.replace(/<div class="footer__legal section-shell">[\s\S]*?<\/div>\s*(?=<\/footer>)/, '')
   if (!html.includes('</footer>')) throw new Error(`Missing footer marker in ${file}`)
   html = html.replace('</footer>', `${legalFooter}</footer>`)
+
+  if (!html.includes('https://ruon.dev/badge.js')) {
+    html = html.replace('</head>', '<script src="https://ruon.dev/badge.js" async></script></head>')
+  }
 
   html = html.replaceAll('>WhatsApp rápido</a>', '>WhatsApp</a>')
   html = html.replaceAll(
