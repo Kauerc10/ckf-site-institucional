@@ -30,3 +30,12 @@ test('gera sitemap.xml com a home canônica', () => {
   const sitemap = readFileSync(sitemapPath, 'utf8')
   assert.ok(sitemap.includes(`<loc>${siteUrl}</loc>`))
 })
+
+test('publica llms.txt com a marca oficial CKF Manutenção e sem termos descontinuados', () => {
+  const llmsPath = path.join(distClient, 'llms.txt')
+  assert.equal(existsSync(llmsPath), true, 'llms.txt deve ser gerado no build')
+  const llms = readFileSync(llmsPath, 'utf8')
+  assert.match(llms, /^# CKF Manutenção\r?\n/)
+  assert.doesNotMatch(llms, /caldeiraria/i, 'Não deve conter termo caldeiraria fora do posicionamento de marca')
+  assert.ok(llms.includes('kaue@ruon.dev'))
+})
