@@ -14,14 +14,14 @@ const pagePath = () => globalThis.location?.pathname || '/'
 const digits = (value) => value.replace(/\D/g, '')
 
 function validateForm(serviceSlug, form) {
-  if (!serviceSlug) return 'Escolha o serviço mais próximo do que você precisa.'
-  if (form.description.trim().length < 5) return 'Conte brevemente o que precisa de atendimento.'
-  if (form.contactName.trim().length < 2) return 'Informe seu nome.'
+  if (!serviceSlug) return { field: 'service', message: 'Escolha o serviço mais próximo do que você precisa.' }
+  if (form.description.trim().length < 5) return { field: 'description', message: 'Conte brevemente o que precisa de atendimento.' }
+  if (form.contactName.trim().length < 2) return { field: 'contact_name', message: 'Informe seu nome.' }
   const phone = digits(form.phone)
-  if (phone.length < 10 || phone.length > 13) return 'Informe um WhatsApp válido com DDD.'
-  if (form.uf && !/^[A-Za-z]{2}$/.test(form.uf.trim())) return 'Informe a UF com duas letras ou deixe em branco.'
-  if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) return 'Informe um e-mail válido ou deixe em branco.'
-  return ''
+  if (phone.length < 10 || phone.length > 13) return { field: 'phone', message: 'Informe um WhatsApp válido com DDD.' }
+  if (form.uf && !/^[A-Za-z]{2}$/.test(form.uf.trim())) return { field: 'uf', message: 'Informe a UF com duas letras ou deixe em branco.' }
+  if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) return { field: 'email', message: 'Informe um e-mail válido ou deixe em branco.' }
+  return null
 }
 
 export function TicketRequestDialog({ open, source = 'unknown', initialServiceSlug = '', onClose }) {
@@ -65,7 +65,11 @@ export function TicketRequestDialog({ open, source = 'unknown', initialServiceSl
   async function handleSubmit(event) {
     event.preventDefault()
     const validationError = validateForm(serviceSlug, form)
-    if (validationError) { setError(validationError); return }
+    if (validationError) {
+      trackEvent('ticket_validation_error', { page: pagePath(), serviceSlug, ctaSource: source, status: validationError.field })
+      setError(validationError.message)
+      return
+    }
     if (!service) { setError('Escolha o tipo de serviço.'); return }
 
     setSubmitting(true)
