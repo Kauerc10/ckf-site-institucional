@@ -52,11 +52,18 @@
 .mobile-menu nav a:last-child { border-bottom:0; }
 .mobile-menu nav a:hover { color:var(--yellow); }
 .mobile-menu nav .mobile-menu__cta {
+  display:flex;
+  min-height:44px;
+  align-items:center;
+  width:100%;
   margin-top:8px;
   justify-content:center;
   border:0;
   background:var(--yellow);
   color:var(--ink);
+  font:700 16px/1 'Barlow Condensed',sans-serif;
+  text-transform:uppercase;
+  cursor:pointer;
 }
 
 :where(a,button,summary,[tabindex]):focus-visible {

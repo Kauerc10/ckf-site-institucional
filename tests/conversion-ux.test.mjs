@@ -83,10 +83,9 @@ test('atalhos de serviço respeitam alvo mínimo de toque no mobile', () => {
   assert.match(mobileCss, /@media \(max-width:800px\)[\s\S]*?td a\s*\{[^}]*width:44px;[^}]*height:44px;/)
 })
 
-test('WhatsApp direto é nomeado como atalho, não como formulário de orçamento', () => {
-  assert.match(app, /data-cta-source="header"[^>]*>[\s\S]*?WhatsApp<\/a>/)
-  assert.match(app, /data-cta-source="mobile-menu"[^>]*>[\s\S]*?WhatsApp<\/a>/)
-  assert.doesNotMatch(app, /data-cta-source="(?:header|mobile-menu)"[^>]*>[\s\S]*?WhatsApp rápido<\/a>/)
+test('header e menu móvel abrem a solicitação diretamente', () => {
+  assert.match(app, /data-ticket-trigger="header"[^>]*onClick=\{\(\) => openTicket\('header'\)\}/)
+  assert.match(app, /data-ticket-trigger="mobile-menu"[^>]*onClick=\{openRequest\}/)
 })
 
 test('CTAs que abrem formulário não prometem abrir WhatsApp imediatamente', () => {
@@ -106,15 +105,15 @@ test('menu móvel fecha depois de navegar para uma seção', () => {
   assert.match(app, /onClick=\{closeMenu\}/)
 })
 
-test('progresso do formulário continua compreensível no celular', () => {
-  assert.doesNotMatch(ticketCss, /\.ticket-progress li\s*\{\s*font-size:\s*0;/)
+test('envio do formulário permanece acessível no celular', () => {
+  assert.match(ticketCss, /\.ticket-form__footer\s*\{[^}]*position:sticky;[^}]*bottom:0;/s)
 })
 
 test('formulário usa viewport dinâmica e geometria industrial da CKF', () => {
-  assert.match(ticketCss, /max-height:\s*min\(860px,\s*calc\(100dvh - 32px\)\)/)
+  assert.match(ticketCss, /max-height:\s*calc\(100dvh - 32px\)/)
   assert.match(ticketCss, /\.ticket-dialog\s*\{[^}]*border-radius:\s*2px;/s)
   assert.match(ticketCss, /\.ticket-form input,[\s\S]*?border-radius:\s*2px;/)
-  assert.match(ticketCss, /\.ticket-progress li\.is-active span\s*\{[^}]*var\(--yellow/s)
+  assert.match(ticketCss, /\.ticket-form__extras summary\s*\{[^}]*var\(--yellow/s)
 })
 
 test('página pública não expõe o jargão interno Ticket', () => {

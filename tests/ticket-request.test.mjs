@@ -92,10 +92,10 @@ test('home abre o formulário pelos CTAs principais', () => {
   assert.match(app, /data-ticket-trigger="contact"/)
 })
 
-test('formulário é progressivo, persiste antes do WhatsApp e informa privacidade', () => {
-  assert.match(dialog, /step === 1/)
-  assert.match(dialog, /step === 2/)
-  assert.match(dialog, /step === 3/)
+test('formulário registra em uma tela antes de seguir ao WhatsApp', () => {
+  assert.match(dialog, /Qual serviço você precisa/)
+  assert.match(dialog, /O que está acontecendo/)
+  assert.match(dialog, /Adicionar detalhes, se quiser/)
   assert.match(dialog, /website/)
   assert.match(dialog, /await submitTicket/)
   assert.match(dialog, /buildTicketWhatsAppUrl/)
