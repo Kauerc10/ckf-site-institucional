@@ -14,3 +14,9 @@
 - Alinhamento, solda e reforço de chassis e caçambas
 - Fabricação e manutenção de estruturas metálicas
 - Manutenção preventiva e corretiva de máquinas pesadas e equipamentos industriais
+
+## Páginas do site
+- [Página inicial](https://ckfmanutencao.com.br/): visão geral, estrutura e contato.
+- [Todos os serviços](https://ckfmanutencao.com.br/servicos): catálogo de serviços e áreas de atuação.
+- [Política de Privacidade](https://ckfmanutencao.com.br/privacidade): tratamento dos dados enviados em solicitações.
+- [Política de Comunicações e Marketing](https://ckfmanutencao.com.br/marketing): preferências de comunicação.

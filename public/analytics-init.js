@@ -107,7 +107,7 @@ window.va = window.va || function () {
   function showPreferences({ focusAction = false } = {}) {
     removeBanner()
 
-    const panel = makeElement('aside', 'analytics-consent')
+    const panel = makeElement('div', 'analytics-consent')
     panel.id = 'ckf-analytics-consent'
     panel.setAttribute('role', 'dialog')
     panel.setAttribute('aria-labelledby', 'ckf-analytics-consent-title')
