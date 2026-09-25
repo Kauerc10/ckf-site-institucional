@@ -112,7 +112,7 @@ export function TicketRequestDialog({ open, source = 'unknown', initialServiceSl
             <label>WhatsApp com DDD<input name="phone" value={form.phone} onChange={updateField} type="tel" inputMode="tel" autoComplete="tel" placeholder="(47) 99999-9999" required /></label>
           </div>
           <details className="ticket-form__extras">
-            <summary>Adicionar detalhes, se quiser</summary>
+            <summary>Adicionar detalhes (opcional)</summary>
             <div className="ticket-form__extras-fields">
               <label>Urgência<select name="urgency" value={form.urgency} onChange={updateField}><option value="a combinar">A combinar</option><option value="parado">Operação parada</option><option value="urgente">Funcionando, mas é urgente</option><option value="programavel">Pode ser programado</option><option value="preventiva">Quero planejar preventiva</option></select></label>
               <div className="ticket-form__grid ticket-form__grid--2"><label>Equipamento<input name="equipmentType" value={form.equipmentType} onChange={updateField} placeholder="Ex.: betoneira" /></label><label>Cidade<input name="city" value={form.city} onChange={updateField} autoComplete="address-level2" /></label></div>
