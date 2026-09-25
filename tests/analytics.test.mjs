@@ -16,7 +16,7 @@ const distClient = path.join(root, 'dist', 'client')
 const allowedEvents = new Set([
   'service_view',
   'ticket_form_open',
-  'ticket_step_complete',
+  'ticket_validation_error',
   'ticket_submit',
   'ticket_success',
   'ticket_error',
@@ -52,7 +52,8 @@ test('instrumentação usa somente eventos do funil aprovado', () => {
   assert.equal(matches.length > 0, true)
   for (const event of matches) assert.equal(allowedEvents.has(event), true, `evento não aprovado: ${event}`)
   assert.match(dialog, /ticket_form_open/)
-  assert.match(dialog, /ticket_step_complete/)
+  assert.match(dialog, /ticket_validation_error/)
+  assert.doesNotMatch(dialog, /ticket_step_complete/)
   assert.match(dialog, /ticket_submit/)
   assert.match(dialog, /ticket_success/)
   assert.match(dialog, /ticket_error/)

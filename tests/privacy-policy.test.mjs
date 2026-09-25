@@ -17,7 +17,7 @@ const serviceHtml = readFileSync(path.join(root, 'dist', 'client', 'servicos', '
 const sitemap = readFileSync(path.join(root, 'dist', 'client', 'sitemap.xml'), 'utf8')
 
 test('formulário informa ciência das duas políticas antes do envio', () => {
-  assert.match(dialog, /Ao prosseguir, você declara ter lido e estar ciente da nossa/i)
+  assert.match(dialog, /Ao enviar, você declara estar ciente da nossa/i)
   assert.match(dialog, /href="\/privacidade"[^>]*>Política de Privacidade<\/a>/)
   assert.match(dialog, /href="\/marketing"[^>]*>Política de Comunicações e Marketing<\/a>/)
 })
@@ -36,8 +36,11 @@ test('divisor jurídico ocupa toda a largura do rodapé', () => {
   assert.match(legalFooterCss, /\.footer__legal::before[\s\S]*left:\s*50%;[\s\S]*width:\s*100vw;[\s\S]*transform:\s*translateX\(-50%\)/)
 })
 
-test('botão principal usa apenas WhatsApp, sem o sufixo rápido', () => {
-  assert.match(app, />\s*WhatsApp\s*<\/a>/)
+test('atalhos diretos continuam identificados como WhatsApp', () => {
+  assert.match(app, /data-cta-source="footer-primary"/)
+  assert.match(app, /<FaWhatsapp \/> \{CONTACTS\.primary\.label\}<\/a>/)
+  assert.match(app, /data-ticket-trigger="header"/)
+  assert.match(app, /Pedir orçamento<\/button>/)
   assert.doesNotMatch(app, /WhatsApp rápido<\/a>/)
 
   for (const html of [privacyHtml, readFileSync(marketingPath, 'utf8'), serviceHtml]) {
