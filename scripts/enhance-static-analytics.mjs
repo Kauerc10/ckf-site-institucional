@@ -7,7 +7,7 @@ const distClient = path.join(root, 'dist', 'client')
 const marker = '<!-- ckf:web-analytics -->'
 const snippet = `${marker}
 <link rel="stylesheet" href="/analytics-consent.css">
-<script src="/analytics-init.js"></script>
+<script defer src="/analytics-init.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>`
 
 function htmlFiles(directory) {
